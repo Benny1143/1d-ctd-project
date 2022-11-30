@@ -5,7 +5,7 @@ def dictToMap(dd: dict):
     s = "=============\n"
     ls = list(["."] * 5 for a in range(5))
     for (x, y), char in dd.items():
-        ls[y - 1][x - 1] = char
+        ls[5-y][5-x] = char
     for row in ls:
         s += "[ " + " ".join(row) + " ]\n"
     return s + "============="
@@ -22,11 +22,11 @@ class Map():
     def moveCharacter(self, key: str):
         x, y = self.user
         if key == "w":
-            self.user = (x, y-1)
+            self.user = (x, y+1)
         elif key == "a":
             print("a")
         elif key == "s":
-            print("s")
+            self.user = (x, y-1)
         elif key == "d":
             print("d")
         self.updateCharacters((x, y), self.user)
