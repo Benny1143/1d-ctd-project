@@ -33,7 +33,8 @@ class ter():
             lines -= 1
         # print(str('\n' * (lines - len(ln))) + string + '\r', end='', flush=True)
         
-        print("\x1B[9A" + string + '\r', end="")
+        # print("\x1B[9A" + string + '\r', end="")
+        print(string, end="")
         if inputStr:
             print()
             return input(inputStr)

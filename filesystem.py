@@ -19,7 +19,8 @@ def getMapInfo(mapID):
 
     # Pesudo Values
     user = (3, 5)
-    characters = {user: "c"}
+    characters = {(3, 5): "我", (3, 4): "马"}
+    # characters.get((3,4)) if return None, no character is at this position
     winningConditions = {
         "马蹄": winningCondition("chestnut", 4),
         "马路": winningCondition("horse", 2)
