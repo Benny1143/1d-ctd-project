@@ -3,7 +3,7 @@ from filesystem import getMapInfo
 
 def dictToMap(dd: dict):
     s = "=============\n"
-    ls = list(["."] * 5 for a in range(5))
+    ls = list(["。"] * 5 for a in range(5))
     for (x, y), char in dd.items():
         ls[5-y][5-x] = char
     for row in ls:
@@ -20,6 +20,15 @@ class Map():
         return dictToMap(self.characters)
 
     def moveCharacter(self, key: str):
+        def isBlocked(cor):
+            # cor = (3,4)
+            character = self.characters.get(cor)
+            if character is None:
+                # safely move
+                return False
+            else:
+                #  Something is blocking u
+                return True
         x, y = self.user
         if key == "w":
             # Check for top wall
@@ -31,7 +40,16 @@ class Map():
             print("a")
         elif key == "s":
             # Check for bottom wall
-            self.user = (x, y-1)
+            new_cor = (x, y-1)
+            self.user = new_cor
+            if isBlocked(new_cor):
+                # Check the item infront
+                ahead = (x, y-2)
+                if isBlocked(ahead):
+                    return
+                else:
+                    print(new_cor, ahead)
+                    self.updateCharacters(new_cor, ahead)
         elif key == "d":
             # Check for right wall
             print("d")
