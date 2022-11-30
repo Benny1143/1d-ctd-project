@@ -1,5 +1,6 @@
 from colorama import init
 # from termcolor import cprint
+from pynput import keyboard
 from help import *
 from map import Map
 
@@ -38,7 +39,6 @@ class ter():
 
 # retrive and store high score data from firebase
 class firebase():
-
     @staticmethod
     def getHighScores():
         return {"benny": 10, "peter": 2}
@@ -47,14 +47,48 @@ class firebase():
 def loadStage(mapID):
     # get info from file system
     map = Map(mapID)
-    map.printMap()
+
+    def printMap(map: Map):
+        mapString = map.getMap()
+        ter.print(f"Stage: {mapID}\n" +
+                  mapString +
+                  f"\n{'':2}w{'':3}{'':3}r - Restart\na s d{'':1}{'':3}e - Exit")
+    printMap(map)
     # info includes characters, win condition
     # dict containing char with a value tuple of coordinate xy
     # win condition contains (according to stage)
 
     # listener listen for wasd
+    # https://stackoverflow.com/questions/11918999/key-listeners-in-python
+    def on_press(key):
+        if key == keyboard.Key.esc:
+            return False  # stop listener
+        try:
+            k = key.char  # single-char keys
+        except:
+            k = key.name  # other keys
+        if k in ["w", "a", "s", "d"]:
+            # Move the character position
+            map.moveCharacter(k)
+            # Print Map
+            printMap(map)
+        elif k == "r":
+            print("s")
+        elif k == "e":
+            return False
+    # https://pynput.readthedocs.io/en/latest/keyboard.html
 
-    pass
+    def on_release(key):
+        # print('{0} released'.format(key))
+        if key in [keyboard.Key.esc, 'e']:
+            return False
+    with keyboard.Listener(
+            on_press=on_press,
+            on_release=on_release) as listener:
+        listener.join()
+    # listener = keyboard.Listener(on_press=on_press)
+    # listener.start()  # start to listen on a separate thread
+    # listener.join()  # remove if main thread is polling self.keys
 
 
 def mainMenu(name):
@@ -71,7 +105,7 @@ Highscores
                                                    for i in range(len(options))) +
         "\nEnter Option: ")
     mapID = 1
-    if option == "1":
+    if option == "0":
         loadStage(mapID)
     else:
         print("exiting")
@@ -93,4 +127,5 @@ U /"___| |"|    U | __")u
 
 
 # main()
-mainMenu("Benny")
+# mainMenu("Benny")
+loadStage(1)
