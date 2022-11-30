@@ -23,6 +23,8 @@ class Map():
         x, y = self.user
         if key == "w":
             # Check for top wall
+            if y == 5:
+                return
             self.user = (x, y+1)
         elif key == "a":
             # Check for left wall
