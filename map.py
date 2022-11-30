@@ -22,12 +22,16 @@ class Map():
     def moveCharacter(self, key: str):
         x, y = self.user
         if key == "w":
+            # Check for top wall
             self.user = (x, y+1)
         elif key == "a":
+            # Check for left wall
             print("a")
         elif key == "s":
+            # Check for bottom wall
             self.user = (x, y-1)
         elif key == "d":
+            # Check for right wall
             print("d")
         self.updateCharacters((x, y), self.user)
 
