@@ -22,16 +22,18 @@ class bcolors:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
 
-
+print("\n"*10)
 class ter():
 
     @staticmethod
     def print(string: str, inputStr: str = None):
         ln = string.split("\n")
-        lines = 30
+        lines = 10
         if inputStr:
             lines -= 1
-        print(str('\n' * (lines - len(ln))) + string, end="")
+        # print(str('\n' * (lines - len(ln))) + string + '\r', end='', flush=True)
+        
+        print("\x1B[9A" + string + '\r', end="")
         if inputStr:
             print()
             return input(inputStr)
