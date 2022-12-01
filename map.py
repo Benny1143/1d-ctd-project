@@ -34,58 +34,85 @@ class Map():
         if key == "w":
             # Check for top wall
             if y == 5:
-                return
-            new_cor = (x, y+1)
-            if isBlocked(new_cor):
-                # Check the item infront
-                ahead = (x, y+1)
-                if isBlocked(ahead):
-                    return
+                return self.user
+            
+            else:
+                new_cor = (x, y+1)
+                if isBlocked(new_cor):
+                    # Check the item infront
+                    ahead = (x, y+2)
+                    if isBlocked(ahead):
+                        return 
+                    else:
+                        if y+1 == 5:
+                            return 
+                        else:
+                            self.user = new_cor
+                            self.updateCharacters(self.user, ahead)
                 else:
                     self.user = new_cor
-                    self.updateCharacters(self.user, ahead)
+            
 
         elif key == "a":
             # Check for left wall
-            if x == 1:
-                return
-            new_cor = (x-1, y)
-            if isBlocked(new_cor):
-                # Check the item infront
-                ahead = (x-2,y)
-                if isBlocked(ahead):
-                    return
+            if x == 5:
+                return self.user
+            else:
+                new_cor = (x+1, y)
+                if isBlocked(new_cor):
+                    # Check the item infront
+                    ahead = (x+2,y)
+                    if isBlocked(ahead):
+                        return
+                    else:
+                        if x+1 == 5:
+                            return 
+                        else:
+                            self.user = new_cor
+                            self.updateCharacters(self.user, ahead)
                 else:
                     self.user = new_cor
-                    self.updateCharacters(self.user, ahead)
 
         elif key == "s":
             # Check for bottom wall
             if y == 1:
-                return
-            new_cor = (x, y-1)
-            if isBlocked(new_cor):
-                # Check the item infront
-                ahead = (x, y-2)
-                if isBlocked(ahead):
-                    return
+                return self.user
+            else:
+                new_cor = (x, y-1)
+                if isBlocked(new_cor):
+                    # Check the item infront
+                    ahead = (x, y-2)
+                    if isBlocked(ahead):
+                        return
+                    else:
+                        if y-1 == 1:
+                            return self.user
+                        else:
+                            self.user = new_cor
+                            self.updateCharacters(self.user, ahead)
                 else:
                     self.user = new_cor
-                    self.updateCharacters(self.user, ahead)
 
         elif key == "d":
             # Check for right wall
-            if x == 5:
-                return 
-            new_cor = (x+1, y)
-            if isBlocked(new_cor):
-                # Check the item infront
-                ahead = (x+2, y)
-                if isBlocked(ahead):
-                    return
+            if x == 1:
+                return self.user
+            else:
+                new_cor = (x-1, y)
+                if isBlocked(new_cor):
+                    # Check the item infront
+                    ahead = (x-2, y)
+                    if isBlocked(ahead):
+                        return
+                    else:
+                        if x-1 == 1:
+                            return 
+                        else:
+                            self.user = new_cor
+                            self.updateCharacters(self.user, ahead)
                 else:
                     self.user = new_cor
-                    self.updateCharacters(self.user, ahead)
+            
 
         self.updateCharacters((x, y), self.user)
 
@@ -93,3 +120,4 @@ class Map():
         char = self.characters[bcor]
         del self.characters[bcor]
         self.characters[acor] = char
+
