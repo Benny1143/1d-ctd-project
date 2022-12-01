@@ -46,7 +46,7 @@ class Map():
                 if isBlocked(ahead):
                     return
                 else:
-                    print(new_cor, ahead)
+                    # print(new_cor, ahead)
                     self.updateCharacters(new_cor, ahead)
         elif key == "d":
             # Check for right wall
