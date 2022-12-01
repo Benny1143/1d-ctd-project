@@ -30,29 +30,63 @@ class Map():
                 #  Something is blocking u
                 return True
         x, y = self.user
+
         if key == "w":
             # Check for top wall
             if y == 5:
                 return
-            self.user = (x, y+1)
+            new_cor = (x, y+1)
+            if isBlocked(new_cor):
+                # Check the item infront
+                ahead = (x, y+1)
+                if isBlocked(ahead):
+                    return
+                else:
+                    self.user = new_cor
+                    self.updateCharacters(self.user, ahead)
+
         elif key == "a":
             # Check for left wall
-            print("a")
+            if x == 1:
+                return
+            new_cor = (x-1, y)
+            if isBlocked(new_cor):
+                # Check the item infront
+                ahead = (x-2,y)
+                if isBlocked(ahead):
+                    return
+                else:
+                    self.user = new_cor
+                    self.updateCharacters(self.user, ahead)
+
         elif key == "s":
             # Check for bottom wall
+            if y == 1:
+                return
             new_cor = (x, y-1)
-            self.user = new_cor
             if isBlocked(new_cor):
                 # Check the item infront
                 ahead = (x, y-2)
                 if isBlocked(ahead):
                     return
                 else:
-                    print(new_cor, ahead)
-                    self.updateCharacters(new_cor, ahead)
+                    self.user = new_cor
+                    self.updateCharacters(self.user, ahead)
+
         elif key == "d":
             # Check for right wall
-            print("d")
+            if x == 5:
+                return 
+            new_cor = (x+1, y)
+            if isBlocked(new_cor):
+                # Check the item infront
+                ahead = (x+2, y)
+                if isBlocked(ahead):
+                    return
+                else:
+                    self.user = new_cor
+                    self.updateCharacters(self.user, ahead)
+
         self.updateCharacters((x, y), self.user)
 
     def updateCharacters(self, bcor, acor):
