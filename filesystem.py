@@ -3,12 +3,19 @@ class winningCondition:
     def __init__(self, name, point):
         self.name = name
         self.point = point
+        self.won = False
 
     def name(self):
         return self.name
 
     def point(self):
         return self.point
+
+    def won(self):
+        return self.won
+        
+    def matched(self):
+        self.won = True
 
 
 def getMapInfo(mapID):
