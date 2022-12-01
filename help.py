@@ -80,17 +80,15 @@ def count_points(ls, win_cond):
     #win_cond: dictionary of of key object
     
     # initialise total points
-    total_points = 0
+    changes = False
 
     # iterate over the ls of possible phrases
     for i in ls:
         if i in win_cond:
-            # total_points += win_cond[i].point
-            # When wc is not matched
             if win_cond.won is False:
                 win_cond.matched()
-                total_point += win_cond[i].point
-    return total_points
+                changes = True
+    return changes
 
 
 
