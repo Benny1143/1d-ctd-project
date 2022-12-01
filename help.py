@@ -39,3 +39,8 @@ def readFile(stage):
     # returb get_character from the string in the file
     pass
 # print(readFile(1))
+
+
+
+def hello(char, coord, all_charwin_cond):
+    pass
