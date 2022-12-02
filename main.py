@@ -37,10 +37,9 @@ Enter your name (1-7 characters): '''
         title = f"Main Menu\n\nWelcome {self.name}\n\n"
         # Highscore String
         hs_string = self.get_highscore_string() + "\n"
-        # Options
-        play_string = "Play Stage " + str(self.map_id)
         while True:
-            # Option String
+            # Options
+            play_string = "Play Stage " + str(self.map_id)
             score = get_user_scores_by_map(self.name, self.map_id)
             if score:
                 play_string += f" (scored {score}pt)"
@@ -83,20 +82,22 @@ Enter your name (1-7 characters): '''
             elif k == "r":
                 print("s")
             elif k == "e":
+                input(colors.Red + "Press Enter to Continue......" + colors.White)
                 return False
-        # https://pynput.readthedocs.io/en/latest/keyboard.html
 
-        def on_release(key):
-            # print('{0} released'.format(key))
-            if key in [keyboard.Key.esc, 'e']:
-                return False
-        with keyboard.Listener(
-                on_press=on_press,
-                on_release=on_release) as listener:
-            listener.join()
-        # listener = keyboard.Listener(on_press=on_press)
-        # listener.start()  # start to listen on a separate thread
-        # listener.join()  # remove if main thread is polling self.keys
+        # https://pynput.readthedocs.io/en/latest/keyboard.html
+        # def on_release(key):
+        #     # print('{0} released'.format(key))
+        #     if key in [keyboard.Key.esc, 'e']:
+        #         print("")
+        #         return False
+        # with keyboard.Listener(
+        #         on_press=on_press,
+        #         on_release=on_release) as listener:
+        #     listener.join()
+        listener = keyboard.Listener(on_press=on_press)
+        listener.start()  # start to listen on a separate thread
+        listener.join()  # remove if main thread is polling self.keys
 
     # Other helpers
 
