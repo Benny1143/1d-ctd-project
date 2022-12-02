@@ -52,7 +52,7 @@ class Map():
                         return False
                     else:
                         if y+1 == 5:
-                            return
+                            return False
                         else:
                             self.user = new_cor
                             self.updateCharacters(self.user, ahead)
@@ -72,7 +72,7 @@ class Map():
                         return False
                     else:
                         if x+1 == 5:
-                            return
+                            return False
                         else:
                             self.user = new_cor
                             self.updateCharacters(self.user, ahead)
@@ -92,7 +92,7 @@ class Map():
                         return False
                     else:
                         if y-1 == 1:
-                            return self.user
+                            return False
                         else:
                             self.user = new_cor
                             self.updateCharacters(self.user, ahead)
@@ -112,7 +112,7 @@ class Map():
                         return False
                     else:
                         if x-1 == 1:
-                            return
+                            return False
                         else:
                             self.user = new_cor
                             self.updateCharacters(self.user, ahead)
