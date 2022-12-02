@@ -4,75 +4,11 @@ from map import Map
 from tm import TerminalManager, colors
 
 
-class ter():
-
-    @staticmethod
-    def print(string: str, inputStr: str = None):
-        ln = string.split("\n")
-        lines = 10
-        if inputStr:
-            lines -= 1
-        # print(str('\n' * (lines - len(ln))) + string + '\r', end='', flush=True)
-
-        # print("\x1B[9A" + string + '\r', end="")
-        print(string, end="")
-        if inputStr:
-            print()
-            return input(inputStr)
-
-
 # retrive and store high score data from firebase
 class firebase():
     @staticmethod
     def getHighScores():
         return {"benny": 10, "peter": 2}
-
-
-def loadStage(mapID):
-    # get info from file system
-    map = Map(mapID)
-
-    def printMap(map: Map):
-        mapString = map.getMap()
-        ter.print(f"Stage: {mapID}\n" +
-                  mapString +
-                  f"\n{'':2}w{'':3}{'':3}r - Restart\na s d{'':1}{'':3}e - Exit")
-    printMap(map)
-    # info includes characters, win condition
-    # dict containing char with a value tuple of coordinate xy
-    # win condition contains (according to stage)
-
-    # listener listen for wasd
-    # https://stackoverflow.com/questions/11918999/key-listeners-in-python
-    def on_press(key):
-        if key == keyboard.Key.esc:
-            return False  # stop listener
-        try:
-            k = key.char  # single-char keys
-        except:
-            k = key.name  # other keys
-        if k in ["w", "a", "s", "d"]:
-            # Move the character position
-            map.moveCharacter(k)
-            # Print Map
-            printMap(map)
-        elif k == "r":
-            print("s")
-        elif k == "e":
-            return False
-    # https://pynput.readthedocs.io/en/latest/keyboard.html
-
-    def on_release(key):
-        # print('{0} released'.format(key))
-        if key in [keyboard.Key.esc, 'e']:
-            return False
-    with keyboard.Listener(
-            on_press=on_press,
-            on_release=on_release) as listener:
-        listener.join()
-    # listener = keyboard.Listener(on_press=on_press)
-    # listener.start()  # start to listen on a separate thread
-    # listener.join()  # remove if main thread is polling self.keys
 
 
 class GameManagement(TerminalManager):
@@ -123,6 +59,46 @@ Enter your name (1-7 characters): '''
 
     def game(self):
         map = Map(self.map_id)
+        title = f"Stage {self.map_id}"
+        control_str = f"\n{'':2}w{'':3}{'':3}r - Restart\na s d{'':1}{'':3}e - Exit"
+
+        def print_map(map: Map):
+            map_str = map.getMap()
+            self.print("\n".join([title, map_str, control_str]), False, False)
+        self.clear()
+        print_map(map)
+
+        # listener listen for wasd
+        # https://stackoverflow.com/questions/11918999/key-listeners-in-python
+        def on_press(key):
+            if key == keyboard.Key.esc:
+                return False  # stop listener
+            try:
+                k = key.char  # single-char keys
+            except:
+                k = key.name  # other keys
+            if k in ["w", "a", "s", "d"]:
+                # Move the character position
+                map.moveCharacter(k)
+                # Print Map
+                print_map(map)
+            elif k == "r":
+                print("s")
+            elif k == "e":
+                return False
+        # https://pynput.readthedocs.io/en/latest/keyboard.html
+
+        def on_release(key):
+            # print('{0} released'.format(key))
+            if key in [keyboard.Key.esc, 'e']:
+                return False
+        with keyboard.Listener(
+                on_press=on_press,
+                on_release=on_release) as listener:
+            listener.join()
+        # listener = keyboard.Listener(on_press=on_press)
+        # listener.start()  # start to listen on a separate thread
+        # listener.join()  # remove if main thread is polling self.keys
 
     # Other helpers
 

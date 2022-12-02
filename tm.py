@@ -13,11 +13,14 @@ class TerminalManager():
         if self.inplace:
             print("\n"*self.length, flush=True)
 
-    def print(self, text: str, get_input: bool = False):
+    def clear(self):
+        print(f"\x1B[{self.length}A" + "\033[K\n" *
+              (self.length), end="", flush=True)
+
+    def print(self, text: str, get_input: bool = False, clear_screen: bool = True):
         length = self.length
-        if self.inplace:
-            print(f"\x1B[{length}A" + "\033[K\n" *
-                  (self.length), end="", flush=True)
+        if self.inplace and clear_screen:
+            self.clear()
         if self.error and self.inplace:
             length -= 1
         text_ls = text.split("\n")
