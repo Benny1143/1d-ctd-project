@@ -57,7 +57,7 @@ Enter your name (1-7 characters): '''
     def game(self):
         map = Map(self.map_id)
         title = f"Stage {self.map_id}"
-        control_str = f"{'':2}w{'':3}{'':3}r - Restart\na s d{'':1}{'':3}e - Exit"
+        control_str = f"{'':2}w{'':3}{'':1}r - Restart\na s d{'':1}{'':1}e - Exit{'':3}"
 
         def print_map(map: Map):
             map_str = map.getMap()
@@ -82,7 +82,6 @@ Enter your name (1-7 characters): '''
                 map.restart()
                 print_map(map)
             elif k == "e":
-                input(colors.Red + "Press Enter to Continue......" + colors.White)
                 return False
 
         # https://pynput.readthedocs.io/en/latest/keyboard.html
@@ -98,6 +97,7 @@ Enter your name (1-7 characters): '''
         listener = keyboard.Listener(on_press=on_press)
         listener.start()  # start to listen on a separate thread
         listener.join()  # remove if main thread is polling self.keys
+        input(colors.Red + "Press Enter to Continue......" + colors.White)
 
     # Other helpers
 
