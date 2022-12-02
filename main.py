@@ -22,7 +22,10 @@ class bcolors:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
 
+
 print("\n"*10)
+
+
 class ter():
 
     @staticmethod
@@ -32,7 +35,7 @@ class ter():
         if inputStr:
             lines -= 1
         # print(str('\n' * (lines - len(ln))) + string + '\r', end='', flush=True)
-        
+
         # print("\x1B[9A" + string + '\r', end="")
         print(string, end="")
         if inputStr:
@@ -115,20 +118,79 @@ Highscores
         exit()
 
 
-def main():
-    # Display Main Page
-    name = ter.print(
-        '''   ____   _        ____   
+class GameManagement:
+    def __init__(self):
+        self.stage = 1
+        self.name = "Benny"
+        self.highscore = None
+
+    # Pages
+    def main(self):
+        page_string = '''   ____   _        ____   
 U /"___| |"|    U | __")u 
 \| | u U | | u   \|  _ \/ 
  | |/__ \| |/__   | |_) | 
   \____| |_____|  |____/  
  _// \\\\  //  \\\\  _|| \\\\_  
 (__)(__)(_")("_)(__) (__)
-''' + "\nWelcome to Chinese Freshmore Programme", "Enter your name: ")
-    mainMenu(name)
+Welcome to Chinese Freshmore Programme
+'''
+        question = "Enter your name: "
+        # Restrict name input to 7 characters
+        name = ter.print(page_string, question)
+        self.name = name
+        self.main_menu()
 
+    def main_menu(self):
+        self.get_highscores()
+        # Title
+        title = f"Main Menu\n{self.name}\n\n"
+        # Highscore String
+        print(self.get_highscore_string())
+        # Options
+        options = {"1": ("Play", self.game), "0": ("Exit", exit)}
+        # Option String
+        option = input(GameManagement.option_printer(options))
+        # Option Handler
+        if option in options:
+            options.get(option)[1]()
+
+    def game(self):
+        print("Game")
+
+    # Other helpers
+    def refresh_highscore(self):
+        self.highscore = firebase.getHighScores()
+        return self.highscore
+    # get_highscores calls firebase and return a list of name: highscore
+
+    def get_highscores(self):
+        return self.highscore if self.highscore else self.refresh_highscore()
+
+    # get_highscore_string return the highscore in string format for printing
+    def get_highscore_string(self):
+        title = "Highscores\n==========="
+        highscores = self.get_highscores()
+        highscore_string = ""
+        for name, score in highscores.items():
+            highscore_string += f"\n{name:8}{score:3}"
+        return title + (highscore_string if highscore_string else "\nNil") + "\n"
+
+    # get_highscore_string takes in a list of {(i, option)}
+    # returns the formatted string
+    @staticmethod
+    def option_printer(options: list):
+        # options: [option]
+        # Dic to List converter
+        ls = list(map(lambda e: (e[0], e[1][0]), options.items()))
+        return "{color}Options:\n{options_string}\nEnter Option: ".format(
+            options_string='\n'.join(f"{i:>4}   {option}" for i, option in ls),
+            color=bcolors.WARNING)
+
+
+pm = GameManagement()
+pm.main_menu()
 
 # main()
 # mainMenu("Benny")
-loadStage(1)
+# loadStage(1)
