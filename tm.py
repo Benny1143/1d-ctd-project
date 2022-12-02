@@ -16,7 +16,7 @@ class TerminalManager():
     def print(self, text: str, get_input: bool = False):
         length = self.length
         if self.inplace:
-            print(f"\x1B[{length}A" + f"\033[K\n" *
+            print(f"\x1B[{length}A" + "\033[K\n" *
                   (self.length), end="", flush=True)
         if self.error and self.inplace:
             length -= 1
@@ -45,4 +45,4 @@ class TerminalManager():
         print(text, flush=True)
 
     def set_error(self, error: str):
-        self.error = colors.Red + error + colors.White
+        self.error = colors.Red + error + colors.White + "\r"

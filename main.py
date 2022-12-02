@@ -103,16 +103,17 @@ Enter your name (1-7 characters): '''
             self.main_menu()
 
     def main_menu(self):
+        # Title
+        title = f"Main Menu\n\nWelcome {self.name}\n\n"
+        # Highscore String
+        hs_string = self.get_highscore_string() + "\n"
+        # Options
+        options = {"1": ("Play", self.game), "0": ("Exit", exit)}
+        options_string = GameManagement.option_printer(options)
+        # Option String
+
         while True:
             self.refresh_highscore()
-            # Title
-            title = f"Main Menu\n\nWelcome {self.name}\n\n"
-            # Highscore String
-            hs_string = self.get_highscore_string() + "\n"
-            # Options
-            options = {"1": ("Play", self.game), "0": ("Exit", exit)}
-            options_string = GameManagement.option_printer(options)
-            # Option String
             option = self.print(title + hs_string + options_string, True)
             # Option Handler
             if option in options:
@@ -161,4 +162,4 @@ Enter your name (1-7 characters): '''
 
 
 pm = GameManagement()
-pm.main_menu()
+pm.main()
