@@ -42,39 +42,37 @@ class Map():
         if key == "w":
             # Check for top wall
             if y == 5:
-                return self.user
-            
+                return False
             else:
                 new_cor = (x, y+1)
                 if isBlocked(new_cor):
                     # Check the item infront
                     ahead = (x, y+2)
                     if isBlocked(ahead):
-                        return 
+                        return False
                     else:
                         if y+1 == 5:
-                            return 
+                            return
                         else:
                             self.user = new_cor
                             self.updateCharacters(self.user, ahead)
                 else:
                     self.user = new_cor
-            
 
         elif key == "a":
             # Check for left wall
             if x == 5:
-                return self.user
+                return False
             else:
                 new_cor = (x+1, y)
                 if isBlocked(new_cor):
                     # Check the item infront
-                    ahead = (x+2,y)
+                    ahead = (x+2, y)
                     if isBlocked(ahead):
-                        return
+                        return False
                     else:
                         if x+1 == 5:
-                            return 
+                            return
                         else:
                             self.user = new_cor
                             self.updateCharacters(self.user, ahead)
@@ -84,14 +82,14 @@ class Map():
         elif key == "s":
             # Check for bottom wall
             if y == 1:
-                return self.user
+                return False
             else:
                 new_cor = (x, y-1)
                 if isBlocked(new_cor):
                     # Check the item infront
                     ahead = (x, y-2)
                     if isBlocked(ahead):
-                        return
+                        return False
                     else:
                         if y-1 == 1:
                             return self.user
@@ -104,23 +102,22 @@ class Map():
         elif key == "d":
             # Check for right wall
             if x == 1:
-                return self.user
+                return False
             else:
                 new_cor = (x-1, y)
                 if isBlocked(new_cor):
                     # Check the item infront
                     ahead = (x-2, y)
                     if isBlocked(ahead):
-                        return
+                        return False
                     else:
                         if x-1 == 1:
-                            return 
+                            return
                         else:
                             self.user = new_cor
                             self.updateCharacters(self.user, ahead)
                 else:
                     self.user = new_cor
-            
 
         self.updateCharacters((x, y), self.user)
 
@@ -128,4 +125,3 @@ class Map():
         char = self.characters[bcor]
         del self.characters[bcor]
         self.characters[acor] = char
-
