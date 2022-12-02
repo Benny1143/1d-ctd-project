@@ -7,6 +7,7 @@ from map import Map
 # https://stackoverflow.com/questions/70480375/python-text-color-is-not-working-in-cmd-but-it-is-working-in-windows-terminal
 init()
 
+
 class ter():
 
     @staticmethod
@@ -78,32 +79,12 @@ def loadStage(mapID):
     # listener.join()  # remove if main thread is polling self.keys
 
 
-def mainMenu(name):
-    hs = firebase.getHighScores()
-    options = ["Play", "Exit", "gghgfg"]
-    option = ter.print(
-        f"""Main Menu
-Welcome {name}
-
-Highscores
-===========""" + "".join(f"\n{name:10} {value: 4}"
-                         for name, value in hs.items()) + "\n",
-        colors.Yellow + "Options:\n" + "\n".join(f"{i:>4}   {options[i]}"
-                                                   for i in range(len(options))) +
-        "\nEnter Option: ")
-    mapID = 1
-    if option == "0":
-        loadStage(mapID)
-    else:
-        print("exiting")
-        exit()
-
-
 class GameManagement:
     def __init__(self):
-        self.stage = 1
+        self.map_id = 1
         self.name = "Benny"
         self.highscore = None
+        self.error = None
 
     # Pages
     def main(self):
@@ -123,23 +104,27 @@ Welcome to Chinese Freshmore Programme
         self.main_menu()
 
     def main_menu(self):
-        self.get_highscores()
-        # Title
-        title = f"Main Menu\n{self.name}\n\n"
-        # Highscore String
-        print(self.get_highscore_string())
-        # Options
-        options = {"1": ("Play", self.game), "0": ("Exit", exit)}
-        # Option String
-        option = input(GameManagement.option_printer(options))
-        # Option Handler
-        if option in options:
-            options.get(option)[1]()
+        while True:
+            self.refresh_highscore()
+            # Title
+            title = f"Main Menu\n{self.name}\n\n"
+            # Highscore String
+            print(self.get_highscore_string())
+            # Options
+            options = {"1": ("Play", self.game), "0": ("Exit", exit)}
+            # Option String
+            option = input(GameManagement.option_printer(options))
+            # Option Handler
+            if option in options:
+                options.get(option)[1]()
+            else:
+                self.error = "Invalid Option"
 
     def game(self):
-        print("Game")
+        map = Map(self.map_id)
 
     # Other helpers
+
     def refresh_highscore(self):
         self.highscore = firebase.getHighScores()
         return self.highscore
