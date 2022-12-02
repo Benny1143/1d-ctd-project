@@ -75,12 +75,11 @@ Enter your name (1-7 characters): '''
             except:
                 k = key.name  # other keys
             if k in ["w", "a", "s", "d"]:
-                # Move the character position
                 map.moveCharacter(k)
-                # Print Map
                 print_map(map)
             elif k == "r":
-                print("s")
+                map.restart()
+                print_map(map)
             elif k == "e":
                 input(colors.Red + "Press Enter to Continue......" + colors.White)
                 return False

@@ -11,7 +11,7 @@ class winningCondition:
         return self.point
 
 
-def getMapInfo(mapID):
+def getMapInfo(mapID) -> tuple[dict, dict, tuple]:
     filename = str(mapID) + ".txt"
     # Fill in, uncomment this section
     # characters, user = get_characters()
