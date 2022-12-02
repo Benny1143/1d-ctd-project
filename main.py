@@ -1,30 +1,11 @@
+import colors
 from colorama import init
-# from termcolor import cprint
 from pynput import keyboard
 from help import *
 from map import Map
 
-init()
-# colored() will also work
-# cprint("Hello World test","cyan")
 # https://stackoverflow.com/questions/70480375/python-text-color-is-not-working-in-cmd-but-it-is-working-in-windows-terminal
-
-
-class bcolors:
-    # https://stackoverflow.com/questions/287871/how-do-i-print-colored-text-to-the-terminal
-    HEADER = '\033[95m'
-    OKBLUE = '\033[94m'
-    OKCYAN = '\033[96m'
-    OKGREEN = '\033[92m'
-    WARNING = '\033[93m'
-    FAIL = '\033[91m'
-    ENDC = '\033[0m'
-    BOLD = '\033[1m'
-    UNDERLINE = '\033[4m'
-
-
-print("\n"*10)
-
+init()
 
 class ter():
 
@@ -107,7 +88,7 @@ Welcome {name}
 Highscores
 ===========""" + "".join(f"\n{name:10} {value: 4}"
                          for name, value in hs.items()) + "\n",
-        bcolors.WARNING + "Options:\n" + "\n".join(f"{i:>4}   {options[i]}"
+        colors.Yellow + "Options:\n" + "\n".join(f"{i:>4}   {options[i]}"
                                                    for i in range(len(options))) +
         "\nEnter Option: ")
     mapID = 1
@@ -185,7 +166,7 @@ Welcome to Chinese Freshmore Programme
         ls = list(map(lambda e: (e[0], e[1][0]), options.items()))
         return "{color}Options:\n{options_string}\nEnter Option: ".format(
             options_string='\n'.join(f"{i:>4}   {option}" for i, option in ls),
-            color=bcolors.WARNING)
+            color=colors.Yellow)
 
 
 pm = GameManagement()
