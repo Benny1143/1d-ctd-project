@@ -2,7 +2,7 @@ from pynput import keyboard
 from help import *
 from map import Map
 from tm import TerminalManager, colors
-from firebase import get_highscores
+from firebase import get_highscores, get_user_scores_by_map
 
 
 class GameManagement(TerminalManager):
@@ -38,11 +38,15 @@ Enter your name (1-7 characters): '''
         # Highscore String
         hs_string = self.get_highscore_string() + "\n"
         # Options
-        options = {"1": ("Play", self.game), "0": ("Exit", exit)}
-        options_string = GameManagement.option_printer(options)
-        # Option String
-
+        play_string = "Play Stage " + str(self.map_id)
         while True:
+            # Option String
+            score = get_user_scores_by_map(self.name, self.map_id)
+            if score:
+                play_string += f" (scored {score}pt)"
+            options = {"1": (play_string, self.game), "0": ("Exit", exit)}
+            options_string = GameManagement.option_printer(options)
+
             self.refresh_highscore()
             option = self.print(title + hs_string + options_string, True)
             # Option Handler
