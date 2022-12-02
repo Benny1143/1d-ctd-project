@@ -57,7 +57,7 @@ Enter your name (1-7 characters): '''
     def game(self):
         map = Map(self.map_id)
         title = f"Stage {self.map_id}"
-        control_str = f"\n{'':2}w{'':3}{'':3}r - Restart\na s d{'':1}{'':3}e - Exit"
+        control_str = f"{'':2}w{'':3}{'':3}r - Restart\na s d{'':1}{'':3}e - Exit"
 
         def print_map(map: Map):
             map_str = map.getMap()

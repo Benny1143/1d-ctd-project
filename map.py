@@ -15,6 +15,14 @@ class Map():
     def __init__(self, mapID):
         self.mapID = mapID
         self.characters, self.winningConditions, self.user = getMapInfo(mapID)
+        self.copy_user = self.user
+        self.copy_characters = self.characters.copy()
+        self.copy_winningConditions = self.winningConditions.copy()
+
+    def restart(self) -> None:
+        self.user = self.copy_user
+        self.characters = self.copy_characters.copy()
+        self.winningConditions = self.copy_winningConditions.copy()
 
     def getMap(self):
         return dictToMap(self.characters)
