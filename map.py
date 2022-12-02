@@ -2,13 +2,13 @@ from filesystem import getMapInfo
 
 
 def dictToMap(dd: dict):
-    s = "=============\n"
+    s = "==================\n"
     ls = list(["。"] * 5 for a in range(5))
     for (x, y), char in dd.items():
         ls[5-y][5-x] = char
     for row in ls:
         s += "[ " + " ".join(row) + " ]\n"
-    return s + "============="
+    return s + "=================="
 
 
 class Map():
