@@ -45,7 +45,7 @@ def get_user_scores(name) -> dict:
 
 
 def get_user_scores_by_map(name, map) -> dict:
-    # Functions return a dict with {map: point} pairs
+    # Functions return the points for the specific map
     if fallback:
         return {1: 4, 2: 6}
     return db.child("users").child(name).child("map").child(map).get().val()
