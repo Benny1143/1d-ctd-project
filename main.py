@@ -2,7 +2,7 @@ from pynput import keyboard
 from help import *
 from map import Map
 from tm import TerminalManager, colors
-from firebase import getHighScores
+from firebase import get_highscores
 
 
 class GameManagement(TerminalManager):
@@ -97,7 +97,7 @@ Enter your name (1-7 characters): '''
     # Other helpers
 
     def refresh_highscore(self):
-        self.highscore = getHighScores()
+        self.highscore = get_highscores()
         return self.highscore
     # get_highscores calls firebase and return a list of name: highscore
 

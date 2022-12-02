@@ -6,8 +6,9 @@ dburl = config('DBURL', default=None)
 email = config('EMAIL', default=None)
 password = config('PASSWORD', default=None)
 apikey = config('APIKEY', default=None)
-authdomain = dburl.replace("https://", "")
+authdomain = dburl.replace("https://", "") if dburl else None
 fallback = True
+user = []
 
 if None in [dburl, email, password, apikey]:
     print(colors.Yellow + """Missing .env variables, unable to connect to firebase
@@ -27,7 +28,8 @@ else:
     fallback = False
 
 
-def getHighScores():
+def get_highscores() -> dict:
+    # Functions return a dict with {name: point} pairs
     if fallback:
-        return {"benny": 10, "peter": 2}
-
+        return {"benny": 10, "peter": 3}
+    return db.child("highscores").get(user['idToken']).val()
