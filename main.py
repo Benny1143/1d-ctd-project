@@ -75,7 +75,8 @@ Enter your name (1-7 characters): '''
             except:
                 k = key.name  # other keys
             if k in ["w", "a", "s", "d"]:
-                map.moveCharacter(k)
+                if map.moveCharacter(k) == False:
+                    self.set_error("Something is blocking you")
                 print_map(map)
             elif k == "r":
                 map.restart()
