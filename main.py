@@ -1,11 +1,7 @@
-import colors
-from colorama import init
 from pynput import keyboard
 from help import *
 from map import Map
-
-# https://stackoverflow.com/questions/70480375/python-text-color-is-not-working-in-cmd-but-it-is-working-in-windows-terminal
-init()
+from tm import TerminalManager, colors
 
 
 class ter():
@@ -79,12 +75,12 @@ def loadStage(mapID):
     # listener.join()  # remove if main thread is polling self.keys
 
 
-class GameManagement:
+class GameManagement(TerminalManager):
     def __init__(self):
+        super().__init__()
         self.map_id = 1
         self.name = "Benny"
         self.highscore = None
-        self.error = None
 
     # Pages
     def main(self):
@@ -95,30 +91,34 @@ U /"___| |"|    U | __")u
   \____| |_____|  |____/  
  _// \\\\  //  \\\\  _|| \\\\_  
 (__)(__)(_")("_)(__) (__)
-Welcome to Chinese Freshmore Programme
-'''
-        question = "Enter your name: "
-        # Restrict name input to 7 characters
-        name = ter.print(page_string, question)
-        self.name = name
-        self.main_menu()
+Welcome to Chinese Freshmore Programme 
+Enter your name (1-7 characters): '''
+        while True:
+            # Restrict name input to 7 characters
+            name = self.print(page_string, True)
+            if len(name) > 7 or len(name) == 0:
+                self.set_error("Invalid String Length")
+                continue
+            self.name = name
+            self.main_menu()
 
     def main_menu(self):
         while True:
             self.refresh_highscore()
             # Title
-            title = f"Main Menu\n{self.name}\n\n"
+            title = f"Main Menu\n\nWelcome {self.name}\n\n"
             # Highscore String
-            print(self.get_highscore_string())
+            hs_string = self.get_highscore_string() + "\n"
             # Options
             options = {"1": ("Play", self.game), "0": ("Exit", exit)}
+            options_string = GameManagement.option_printer(options)
             # Option String
-            option = input(GameManagement.option_printer(options))
+            option = self.print(title + hs_string + options_string, True)
             # Option Handler
             if option in options:
                 options.get(option)[1]()
             else:
-                self.error = "Invalid Option"
+                self.set_error("Invalid Option")
 
     def game(self):
         map = Map(self.map_id)
@@ -138,7 +138,13 @@ Welcome to Chinese Freshmore Programme
         title = "Highscores\n==========="
         highscores = self.get_highscores()
         highscore_string = ""
-        for name, score in highscores.items():
+        hs_keys = list(highscores.keys())
+        for i in range(3):
+            if (i + 1) > len(hs_keys):
+                highscore_string += "\n"
+                continue
+            name = hs_keys[i]
+            score = highscores[hs_keys[i]]
             highscore_string += f"\n{name:8}{score:3}"
         return title + (highscore_string if highscore_string else "\nNil") + "\n"
 
@@ -149,14 +155,10 @@ Welcome to Chinese Freshmore Programme
         # options: [option]
         # Dic to List converter
         ls = list(map(lambda e: (e[0], e[1][0]), options.items()))
-        return "{color}Options:\n{options_string}\nEnter Option: ".format(
+        return "{color}Options:\n{options_string}\nEnter Option: {white}".format(
             options_string='\n'.join(f"{i:>4}   {option}" for i, option in ls),
-            color=colors.Yellow)
+            color=colors.Yellow, white=colors.White)
 
 
 pm = GameManagement()
 pm.main_menu()
-
-# main()
-# mainMenu("Benny")
-# loadStage(1)
