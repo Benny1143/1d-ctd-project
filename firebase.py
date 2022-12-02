@@ -26,14 +26,14 @@ else:
     fallback = False
 
 
-def get_highscores() -> dict:
+def get_highscores() -> dict[str, int]:
     # Functions return a dict with {name: point} pairs
     if fallback:
         return {"benny": 10, "peter": 3}
     return db.child("highscores").get().val()
 
 
-def get_user_scores(name) -> dict:
+def get_user_scores(name) -> dict[int, int]:
     # Functions return a dict with {map: point} pairs
     # Returns None if name or map is not found
     if fallback:
@@ -45,7 +45,7 @@ def get_user_scores(name) -> dict:
     return dic
 
 
-def get_user_scores_by_map(name, map) -> dict:
+def get_user_scores_by_map(name, map) -> int:
     # Functions return the points for the specific map
     # Returns None if name or map is not found
     if fallback:

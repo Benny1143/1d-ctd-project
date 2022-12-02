@@ -1,7 +1,8 @@
 from filesystem import getMapInfo
+from typing import Literal
 
 
-def dictToMap(dd: dict):
+def dictToMap(dd: dict) -> str:
     s = "==================\n"
     ls = list(["。"] * 5 for a in range(5))
     for (x, y), char in dd.items():
@@ -24,10 +25,10 @@ class Map():
         self.characters = self.copy_characters.copy()
         self.winningConditions = self.copy_winningConditions.copy()
 
-    def getMap(self):
+    def getMap(self) -> str:
         return dictToMap(self.characters)
 
-    def moveCharacter(self, key: str):
+    def moveCharacter(self, key: str) -> Literal[False] | None:
         def isBlocked(cor):
             # cor = (3,4)
             character = self.characters.get(cor)
@@ -121,7 +122,7 @@ class Map():
 
         self.updateCharacters((x, y), self.user)
 
-    def updateCharacters(self, bcor, acor):
+    def updateCharacters(self, bcor, acor) -> None:
         char = self.characters[bcor]
         del self.characters[bcor]
         self.characters[acor] = char

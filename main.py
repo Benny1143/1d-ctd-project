@@ -3,6 +3,8 @@ from help import *
 from map import Map
 from tm import TerminalManager, colors
 from firebase import get_highscores, get_user_scores_by_map
+from typing import Literal
+from pynput.keyboard import Key, KeyCode
 
 
 class GameManagement(TerminalManager):
@@ -13,7 +15,7 @@ class GameManagement(TerminalManager):
         self.highscore = None
 
     # Pages
-    def main(self):
+    def main(self) -> None:
         page_string = '''   ____   _        ____   
 U /"___| |"|    U | __")u 
 \| | u U | | u   \|  _ \/ 
@@ -32,7 +34,7 @@ Enter your name (1-7 characters): '''
             self.name = name
             self.main_menu()
 
-    def main_menu(self):
+    def main_menu(self) -> None:
         # Title
         title = f"Main Menu\n\nWelcome {self.name}\n\n"
         # Highscore String
@@ -54,12 +56,12 @@ Enter your name (1-7 characters): '''
             else:
                 self.set_error("Invalid Option")
 
-    def game(self):
+    def game(self) -> None:
         map = Map(self.map_id)
         title = f"Stage {self.map_id}"
         control_str = f"{'':2}w{'':3}{'':1}r - Restart\na s d{'':1}{'':1}e - Exit{'':3}"
 
-        def print_map(map: Map):
+        def print_map(map: Map) -> None:
             map_str = map.getMap()
             self.print("\n".join([title, map_str, control_str]), False, False)
         self.clear()
@@ -67,7 +69,7 @@ Enter your name (1-7 characters): '''
 
         # listener listen for wasd
         # https://stackoverflow.com/questions/11918999/key-listeners-in-python
-        def on_press(key):
+        def on_press(key: KeyCode | Key | None) -> Literal[False] | None:
             if key == keyboard.Key.esc:
                 return False  # stop listener
             try:
@@ -101,16 +103,16 @@ Enter your name (1-7 characters): '''
 
     # Other helpers
 
-    def refresh_highscore(self):
+    def refresh_highscore(self) -> dict[str, int]:
         self.highscore = get_highscores()
         return self.highscore
     # get_highscores calls firebase and return a list of name: highscore
 
-    def get_highscores(self):
+    def get_highscores(self) -> dict[str, int]:
         return self.highscore if self.highscore else self.refresh_highscore()
 
     # get_highscore_string return the highscore in string format for printing
-    def get_highscore_string(self):
+    def get_highscore_string(self) -> str:
         title = "Highscores\n==========="
         highscores = self.get_highscores()
         highscore_string = ""
@@ -127,7 +129,7 @@ Enter your name (1-7 characters): '''
     # get_highscore_string takes in a list of {(i, option)}
     # returns the formatted string
     @staticmethod
-    def option_printer(options: list):
+    def option_printer(options: list) -> str:
         # options: [option]
         # Dic to List converter
         ls = list(map(lambda e: (e[0], e[1][0]), options.items()))

@@ -4,10 +4,10 @@ class winningCondition:
         self.name = name
         self.point = point
 
-    def name(self):
+    def name(self) -> str:
         return self.name
 
-    def point(self):
+    def point(self) -> str:
         return self.point
 
 
