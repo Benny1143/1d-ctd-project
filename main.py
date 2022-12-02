@@ -2,7 +2,7 @@ from pynput import keyboard
 from help import *
 from map import Map
 from tm import TerminalManager, colors
-from firebase import getHighScores
+from firebase import get_highscores, get_user_scores_by_map
 
 
 class GameManagement(TerminalManager):
@@ -37,12 +37,15 @@ Enter your name (1-7 characters): '''
         title = f"Main Menu\n\nWelcome {self.name}\n\n"
         # Highscore String
         hs_string = self.get_highscore_string() + "\n"
-        # Options
-        options = {"1": ("Play", self.game), "0": ("Exit", exit)}
-        options_string = GameManagement.option_printer(options)
-        # Option String
-
         while True:
+            # Options
+            play_string = "Play Stage " + str(self.map_id)
+            score = get_user_scores_by_map(self.name, self.map_id)
+            if score:
+                play_string += f" (scored {score}pt)"
+            options = {"1": (play_string, self.game), "0": ("Exit", exit)}
+            options_string = GameManagement.option_printer(options)
+
             self.refresh_highscore()
             option = self.print(title + hs_string + options_string, True)
             # Option Handler
@@ -79,25 +82,27 @@ Enter your name (1-7 characters): '''
             elif k == "r":
                 print("s")
             elif k == "e":
+                input(colors.Red + "Press Enter to Continue......" + colors.White)
                 return False
-        # https://pynput.readthedocs.io/en/latest/keyboard.html
 
-        def on_release(key):
-            # print('{0} released'.format(key))
-            if key in [keyboard.Key.esc, 'e']:
-                return False
-        with keyboard.Listener(
-                on_press=on_press,
-                on_release=on_release) as listener:
-            listener.join()
-        # listener = keyboard.Listener(on_press=on_press)
-        # listener.start()  # start to listen on a separate thread
-        # listener.join()  # remove if main thread is polling self.keys
+        # https://pynput.readthedocs.io/en/latest/keyboard.html
+        # def on_release(key):
+        #     # print('{0} released'.format(key))
+        #     if key in [keyboard.Key.esc, 'e']:
+        #         print("")
+        #         return False
+        # with keyboard.Listener(
+        #         on_press=on_press,
+        #         on_release=on_release) as listener:
+        #     listener.join()
+        listener = keyboard.Listener(on_press=on_press)
+        listener.start()  # start to listen on a separate thread
+        listener.join()  # remove if main thread is polling self.keys
 
     # Other helpers
 
     def refresh_highscore(self):
-        self.highscore = getHighScores()
+        self.highscore = get_highscores()
         return self.highscore
     # get_highscores calls firebase and return a list of name: highscore
 
