@@ -57,29 +57,39 @@ Enter your name (1-7 characters): '''
                 self.set_error("Invalid Option")
 
     def game(self) -> None:
-        map = Map(self.map_id)
+        map = Map(self.map_id, True)
         title = f"Stage {self.map_id}"
         control_str = f"{'':2}w{'':3}{'':1}r - Restart\na s d{'':1}{'':1}e - Exit{'':3}"
 
         def print_map(map: Map) -> None:
-            map_str = map.getMap()
+            map_str = map.get_map()
             self.print("\n".join([title, map_str, control_str]), False, False)
         self.clear()
         print_map(map)
 
-        # listener listen for wasd
+        wasd_keys = ("w", "a", "s", "d")
+        arrow_keys = (keyboard.Key.up, keyboard.Key.left,
+                      keyboard.Key.down, keyboard.Key.right)
+        arrow_controls = {key: char for key,
+                          char in zip(arrow_keys, wasd_keys)}
+
         # https://stackoverflow.com/questions/11918999/key-listeners-in-python
+
         def on_press(key: KeyCode | Key | None) -> Literal[False] | None:
+            def move_character(k: str, user_id: int = 0) -> None:
+                if map.move_character(k, user_id) == False:
+                    self.set_error("Something is blocking you")
+                return print_map(map)
             if key == keyboard.Key.esc:
                 return False  # stop listener
+            if key in arrow_keys:
+                return move_character(arrow_controls[key], 1 if map.is_dual() else 0)
             try:
                 k = key.char  # single-char keys
             except:
                 k = key.name  # other keys
-            if k in ["w", "a", "s", "d"]:
-                if map.moveCharacter(k) == False:
-                    self.set_error("Something is blocking you")
-                print_map(map)
+            if k in wasd_keys:
+                return move_character(k)
             elif k == "r":
                 map.restart()
                 print_map(map)
@@ -139,4 +149,4 @@ Enter your name (1-7 characters): '''
 
 
 pm = GameManagement()
-pm.main()
+pm.game()
