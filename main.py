@@ -106,17 +106,17 @@ Enter your name (1-7 characters): '''
                 return False
 
         # https://www.geeksforgeeks.org/python-different-ways-to-kill-a-thread/
-        stop_threads = False
 
         def worker():
             while True:
-                (k, user_id) = q.get()
+                data = q.get()
+                if data == False:
+                    break
+                (k, user_id) = data
                 if map.move_character(k, user_id) == False:
                     self.set_error("Something is blocking you")
                 print_map(map)
                 q.task_done()
-                if stop_threads:
-                    break
 
         threading.Thread(target=worker, daemon=True).start()
 
@@ -133,7 +133,7 @@ Enter your name (1-7 characters): '''
         listener = keyboard.Listener(on_press=on_press)
         listener.start()  # start to listen on a separate thread
         listener.join()  # remove if main thread is polling self.keys
-        stop_threads = True
+        q.put(False)
         input(colors.Red + "Press Enter to Continue......" + colors.White)
 
     # Other helpers
