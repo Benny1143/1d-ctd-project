@@ -25,4 +25,4 @@ def getMapInfo(mapID) -> tuple[dict, dict, tuple]:
         "马蹄": winningCondition("chestnut", 4),
         "马路": winningCondition("horse", 2)
     }
-    return (characters, winningConditions, user)
+    return (characters.copy(), winningConditions.copy(), user)
