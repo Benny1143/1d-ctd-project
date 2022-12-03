@@ -76,9 +76,10 @@ Enter your name (1-7 characters): '''
         title = f"Stage {self.map_id}"
         control_str = f"{'':2}w{'':3}{'':1}r - Restart\na s d{'':1}{'':1}e - Exit{'':3}"
 
-        def print_map(map: Map) -> None:
+        def print_map(map: Map, last_line: bool = False) -> None:
             map_str = map.get_map()
-            self.print("\n".join([title, map_str, control_str]), False, False)
+            self.print(
+                "\n".join([title, map_str, control_str]), last_line, False)
         self.clear()
         print_map(map)
 
@@ -138,7 +139,8 @@ Enter your name (1-7 characters): '''
         listener.start()  # start to listen on a separate thread
         listener.join()  # remove if main thread is polling self.keys
         q.put(False)
-        input(colors.Red + "Press Enter to Continue......" + colors.White)
+        self.set_error("Press Enter to Continue......")
+        print_map(map, True)
 
     # Other helpers
 
