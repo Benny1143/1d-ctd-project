@@ -5,6 +5,11 @@ from tm import TerminalManager, colors
 from firebase import get_highscores, get_user_scores_by_map
 from typing import Literal
 from pynput.keyboard import Key, KeyCode
+# https://docs.python.org/3/library/queue.html
+import threading
+import queue
+
+q = queue.Queue()
 
 
 class GameManagement(TerminalManager):
@@ -13,6 +18,7 @@ class GameManagement(TerminalManager):
         self.map_id = 1
         self.name = "Benny"
         self.highscore = None
+        self.dual_mode = False
 
     # Pages
     def main(self) -> None:
@@ -43,13 +49,18 @@ Enter your name (1-7 characters): '''
         title = f"Main Menu\n\nWelcome {self.name}\n\n"
         # Highscore String
         hs_string = self.get_highscore_string() + "\n"
+
+        def switch_dual():
+            self.dual_mode = not self.dual_mode
+
         while True:
             # Options
             play_string = "Play Stage " + str(self.map_id)
             score = get_user_scores_by_map(self.name, self.map_id)
             if score:
                 play_string += f" (scored {score}pt)"
-            options = {"1": (play_string, self.game), "0": ("Exit", exit)}
+            options = {"1": (play_string, self.game), "2": (
+                f"Dual Mode ({self.dual_mode})", switch_dual), "0": ("Exit", exit)}
             options_string = GameManagement.option_printer(options)
 
             self.refresh_highscore()
@@ -61,34 +72,57 @@ Enter your name (1-7 characters): '''
                 self.set_error("Invalid Option")
 
     def game(self) -> None:
-        map = Map(self.map_id)
+        map = Map(self.map_id, self.dual_mode)
         title = f"Stage {self.map_id}"
         control_str = f"{'':2}w{'':3}{'':1}r - Restart\na s d{'':1}{'':1}e - Exit{'':3}"
 
         def print_map(map: Map) -> None:
-            map_str = map.getMap()
+            map_str = map.get_map()
             self.print("\n".join([title, map_str, control_str]), False, False)
         self.clear()
         print_map(map)
 
-        # listener listen for wasd
+        wasd_keys = ("w", "a", "s", "d")
+        arrow_keys = (keyboard.Key.up, keyboard.Key.left,
+                      keyboard.Key.down, keyboard.Key.right)
+        arrow_controls = {key: char for key,
+                          char in zip(arrow_keys, wasd_keys)}
+
         # https://stackoverflow.com/questions/11918999/key-listeners-in-python
+
         def on_press(key: KeyCode | Key | None) -> Literal[False] | None:
+            def move_character(k: str, user_id: int = 0) -> None:
+                q.put((k, user_id))
             if key == keyboard.Key.esc:
                 return False  # stop listener
+            if key in arrow_keys:
+                return move_character(arrow_controls[key], 1 if map.is_dual() else 0)
             try:
                 k = key.char  # single-char keys
             except:
                 k = key.name  # other keys
-            if k in ["w", "a", "s", "d"]:
-                if map.moveCharacter(k) == False:
-                    self.set_error("Something is blocking you")
-                print_map(map)
+            if k in wasd_keys:
+                return move_character(k)
             elif k == "r":
                 map.restart()
                 print_map(map)
             elif k == "e":
                 return False
+
+        # https://www.geeksforgeeks.org/python-different-ways-to-kill-a-thread/
+
+        def worker():
+            while True:
+                data = q.get()
+                if data == False:
+                    break
+                (k, user_id) = data
+                if map.move_character(k, user_id) == False:
+                    self.set_error("Something is blocking you")
+                print_map(map)
+                q.task_done()
+
+        threading.Thread(target=worker, daemon=True).start()
 
         # https://pynput.readthedocs.io/en/latest/keyboard.html
         # def on_release(key):
@@ -103,6 +137,7 @@ Enter your name (1-7 characters): '''
         listener = keyboard.Listener(on_press=on_press)
         listener.start()  # start to listen on a separate thread
         listener.join()  # remove if main thread is polling self.keys
+        q.put(False)
         input(colors.Red + "Press Enter to Continue......" + colors.White)
 
     # Other helpers
