@@ -18,6 +18,7 @@ class GameManagement(TerminalManager):
         self.map_id = 1
         self.name = "Benny"
         self.highscore = None
+        self.dual_mode = False
 
     # Pages
     def main(self) -> None:
@@ -44,13 +45,18 @@ Enter your name (1-7 characters): '''
         title = f"Main Menu\n\nWelcome {self.name}\n\n"
         # Highscore String
         hs_string = self.get_highscore_string() + "\n"
+
+        def switch_dual():
+            self.dual_mode = not self.dual_mode
+
         while True:
             # Options
             play_string = "Play Stage " + str(self.map_id)
             score = get_user_scores_by_map(self.name, self.map_id)
             if score:
                 play_string += f" (scored {score}pt)"
-            options = {"1": (play_string, self.game), "0": ("Exit", exit)}
+            options = {"1": (play_string, self.game), "2": (
+                f"Dual Mode ({self.dual_mode})", switch_dual), "0": ("Exit", exit)}
             options_string = GameManagement.option_printer(options)
 
             self.refresh_highscore()
@@ -62,7 +68,7 @@ Enter your name (1-7 characters): '''
                 self.set_error("Invalid Option")
 
     def game(self) -> None:
-        map = Map(self.map_id, True)
+        map = Map(self.map_id, self.dual_mode)
         title = f"Stage {self.map_id}"
         control_str = f"{'':2}w{'':3}{'':1}r - Restart\na s d{'':1}{'':1}e - Exit{'':3}"
 
@@ -168,4 +174,4 @@ Enter your name (1-7 characters): '''
 
 
 pm = GameManagement()
-pm.game()
+pm.main()
