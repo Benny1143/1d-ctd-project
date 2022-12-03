@@ -48,8 +48,12 @@ class Map():
         return self.dual
 
     def move_character(self, key: str, user_id: int = 0) -> Literal[False] | None:
-        def isBlocked(cor: tuple) -> bool:
+        def is_blocked(cor: tuple) -> bool:
             return not not self.characters.get(cor)
+
+        def is_character(cor: tuple) -> bool:
+            return self.characters.get(cor) in ["我", "他"]
+
         user = self.user[user_id]
         x, y = user
 
@@ -59,10 +63,10 @@ class Map():
                 return False
             else:
                 user = (x, y+1)
-                if isBlocked(user):
+                if is_blocked(user):
                     # Check the item infront
                     ahead = (x, y+2)
-                    if isBlocked(ahead):
+                    if is_character(user) or is_blocked(ahead):
                         return False
                     else:
                         if y+1 == 5:
@@ -75,10 +79,10 @@ class Map():
                 return False
             else:
                 user = (x+1, y)
-                if isBlocked(user):
+                if is_blocked(user):
                     # Check the item infront
                     ahead = (x+2, y)
-                    if isBlocked(ahead):
+                    if is_character(user) or is_blocked(ahead):
                         return False
                     else:
                         if x+1 == 5:
@@ -91,10 +95,10 @@ class Map():
                 return False
             else:
                 user = (x, y-1)
-                if isBlocked(user):
+                if is_blocked(user):
                     # Check the item infront
                     ahead = (x, y-2)
-                    if isBlocked(ahead):
+                    if is_character(user) or is_blocked(ahead):
                         return False
                     else:
                         if y-1 == 1:
@@ -107,10 +111,10 @@ class Map():
                 return False
             else:
                 user = (x-1, y)
-                if isBlocked(user):
+                if is_blocked(user):
                     # Check the item infront
                     ahead = (x-2, y)
-                    if isBlocked(ahead):
+                    if is_character(user) or is_blocked(ahead):
                         return False
                     else:
                         if x-1 == 1:

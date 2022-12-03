@@ -5,6 +5,11 @@ from tm import TerminalManager, colors
 from firebase import get_highscores, get_user_scores_by_map
 from typing import Literal
 from pynput.keyboard import Key, KeyCode
+# https://docs.python.org/3/library/queue.html
+import threading
+import queue
+
+q = queue.Queue()
 
 
 class GameManagement(TerminalManager):
@@ -77,9 +82,7 @@ Enter your name (1-7 characters): '''
 
         def on_press(key: KeyCode | Key | None) -> Literal[False] | None:
             def move_character(k: str, user_id: int = 0) -> None:
-                if map.move_character(k, user_id) == False:
-                    self.set_error("Something is blocking you")
-                return print_map(map)
+                q.put((k, user_id))
             if key == keyboard.Key.esc:
                 return False  # stop listener
             if key in arrow_keys:
@@ -96,6 +99,21 @@ Enter your name (1-7 characters): '''
             elif k == "e":
                 return False
 
+        # https://www.geeksforgeeks.org/python-different-ways-to-kill-a-thread/
+        stop_threads = False
+
+        def worker():
+            while True:
+                (k, user_id) = q.get()
+                if map.move_character(k, user_id) == False:
+                    self.set_error("Something is blocking you")
+                print_map(map)
+                q.task_done()
+                if stop_threads:
+                    break
+
+        threading.Thread(target=worker, daemon=True).start()
+
         # https://pynput.readthedocs.io/en/latest/keyboard.html
         # def on_release(key):
         #     # print('{0} released'.format(key))
@@ -109,6 +127,7 @@ Enter your name (1-7 characters): '''
         listener = keyboard.Listener(on_press=on_press)
         listener.start()  # start to listen on a separate thread
         listener.join()  # remove if main thread is polling self.keys
+        stop_threads = True
         input(colors.Red + "Press Enter to Continue......" + colors.White)
 
     # Other helpers
