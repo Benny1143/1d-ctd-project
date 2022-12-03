@@ -13,6 +13,9 @@ class TerminalManager():
         if self.inplace:
             print("\n"*self.length, flush=True)
 
+    def switch_inplace(self):
+        self.inplace = not self.inplace
+
     def clear(self):
         print(f"\x1B[{self.length}A" + "\033[K\n" *
               (self.length), end="", flush=True)

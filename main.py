@@ -31,7 +31,11 @@ Enter your name (1-7 characters): '''
             if len(name) > 7 or len(name) == 0:
                 self.set_error("Invalid String Length")
                 continue
-            self.name = name
+            # Secret switch
+            if name == "0":
+                self.switch_inplace()
+            else:
+                self.name = name
             self.main_menu()
 
     def main_menu(self) -> None:
