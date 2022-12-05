@@ -48,6 +48,8 @@ def get_map_info(mapID: str) -> tuple[dict, dict, tuple]:
     #     "马路": winningCondition("road", 2)
     # }
     # return (characters.copy(), winningConditions.copy(), user)
+
+    # TODO: Handle File not found error
     with open(str(mapID) + ".txt", "r", encoding="utf8") as f:
         lines = f.read()
         (characterstring, winningstring) = lines.split("\n")
