@@ -1,4 +1,4 @@
-from filesystem import getMapInfo
+from filesystem import get_map_info
 from typing import Literal
 import colors
 
@@ -17,16 +17,27 @@ class Map():
     def __init__(self, mapID, dual: bool = False):
         self.dual = dual
         self.mapID = mapID
-        self.characters, self.winningConditions, user = getMapInfo(mapID)
+        self.characters, self.winningConditions, user = get_map_info(mapID)
         if type(user) == list:
             self.user = user
         elif type(user) == tuple:
             self.user = [user]
             if dual:
-                # TODO: Search for empty space
-                cor = (1, 1)
-                self.user.append(cor)
-                self.characters[cor] = "他"
+                coordinate = (1, 1)
+                while True:
+                    if not self.characters.get(coordinate):
+                        self.user.append(coordinate)
+                        self.characters[coordinate] = "他"
+                        break
+                    x, y = coordinate
+                    if x <= 5:
+                        x += 1
+                    elif y <= 5:
+                        y += 1
+                    else:
+                        print("Error: Unable to add second player")
+                        exit()
+                    coordinate = x, y
         else:
             print(colors.Red + "Invalid User" + colors.White)
         self.copy_user = self.user.copy()
