@@ -6,6 +6,6 @@ lines = f.read()
 characterDic, user = get_character(characterstring)
 winningDic = get_winnings(winningstring)
 
-f = open("demofile3.txt", "w", encoding="utf8" )
+f = open("1.txt", "w", encoding="utf8" )
 f.write(ConvDictToString(characterDic, winningDic))
 f.close()
