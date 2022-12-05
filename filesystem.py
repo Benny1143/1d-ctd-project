@@ -11,7 +11,7 @@ class WinningCondition:
         return self.point
 
 
-def get_character(string: str):
+def get_character(string: str) -> tuple[dict[tuple[int, int], str], tuple[int, int]]:
     #  string example: "我1,1;马2,2"
     characters = {}
     user = ()
@@ -27,7 +27,7 @@ def get_character(string: str):
     return characters, user
 
 
-def get_winnings(string: str):
+def get_winnings(string: str) -> dict[str, WinningCondition]:
     # string example: "马蹄,chestnut,4;马路,road,2"
     winning_conditions = {}
     for i in string.split(";"):
@@ -39,7 +39,7 @@ def get_winnings(string: str):
     return winning_conditions
 
 
-def get_map_info(mapID: str) -> tuple[dict, dict, tuple]:
+def get_map_info(mapID: str) -> tuple[dict[tuple[int, int], str], dict[str, WinningCondition], tuple[int, int]]:
     # Pesudo Values
     # user = (3, 5)
     # characters = {(3, 5): "我", (3, 4): "马"}
@@ -53,12 +53,12 @@ def get_map_info(mapID: str) -> tuple[dict, dict, tuple]:
     with open(str(mapID) + ".txt", "r", encoding="utf8") as f:
         lines = f.read()
         (characterstring, winningstring) = lines.split("\n")
-        characters, user = get_character(characterstring)
+        characters, user_coordinate = get_character(characterstring)
         winning_conditions = get_winnings(winningstring)
-        return characters.copy(), winning_conditions.copy(), user
+        return characters.copy(), winning_conditions.copy(), user_coordinate
 
 
-def dict_to_string(characters: dict[tuple[int, int], str], winning_conditions: dict[str, WinningCondition]):
+def dict_to_string(characters: dict[tuple[int, int], str], winning_conditions: dict[str, WinningCondition]) -> str:
     convertedchar = ""
     convertedwin = ""
     for charkey in characters:
