@@ -4,10 +4,10 @@ class winningCondition:
         self.name = name
         self.point = point
 
-    def name(self):
+    def name(self) -> str:
         return self.name
 
-    def point(self):
+    def point(self) -> str:
         return self.point
 
 def get_character(s):
@@ -33,8 +33,7 @@ def get_winnings(t):
         winningConditions[winchar] = winningCondition(name, point)
     return winningConditions
 
-def getMapInfo(mapID):
-
+def getMapInfo(mapID) -> tuple[dict, dict, tuple]:
     filename = str(mapID) + ".txt"
     
     f = open(filename, "r")
@@ -82,7 +81,6 @@ def writeToFile(filename, cdic, wcdic):
     }
     #store the winning condition as string "马蹄,chestnut,4;马路,road,2"
     #convert to a dict {"马蹄": {name: "chestnut", point: 4}, "马路": {name: "road", point: 2}} 
-    return (characters, winningConditions, user)
-# getMapInfo(1)
+    return (characters.copy(), winningConditions.copy(), user)
 
 # writeToFile(1)
