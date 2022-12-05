@@ -44,9 +44,9 @@ def readFile(stage):
 
 def check_win(char, coord, all_char, win_cond):
     #char: str character moved
-    #coord: tuple coordinate of character moved
+    #coord: tuple new coordinate of character moved to
     #all_char: dictionary of all characters with coordinates
-    #win_cond: dictionary of key object
+    #win_cond: dictionary of all winning phrase
     
     # unpack coord tuple
     x, y = coord
@@ -71,22 +71,28 @@ def check_win(char, coord, all_char, win_cond):
         bottom_char = all_char.get((x, y-1))
         ls.append(char + bottom_char)
     
-    # call function to count points
-    return count_points(ls, win_cond)
-    pass
+    # call function to ammend attribute of the phrase and tell if there are any changes made
+    changes = update_win_state(ls, win_cond)
 
-def count_points(ls, win_cond):
+    # return boolean only??
+    return changes
+
+def update_win_state(ls, win_cond):
     #ls: list of phrase that exist
     #win_cond: dictionary of of key object
     
-    # initialise total points
+    # initialise no change
     changes = False
 
     # iterate over the ls of possible phrases
     for i in ls:
+        # if phrase is in dictionary of phrase
         if i in win_cond:
+            # check if the phrase is double counted
             if win_cond.won is False:
+                # call method .matched to count the score ONCE
                 win_cond.matched()
+                # return boolean to indicate if any change has been made, be it 1 change or many changes
                 changes = True
     return changes
 
