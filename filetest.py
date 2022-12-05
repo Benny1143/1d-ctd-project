@@ -5,4 +5,7 @@ lines = f.read()
 # print(characterstring)
 characterDic, user = get_character(characterstring)
 winningDic = get_winnings(winningstring)
-print("Answer: " + ConvDictToString(characterDic, winningDic))
+
+f = open("demofile3.txt", "w", encoding="utf8" )
+f.write(ConvDictToString(characterDic, winningDic))
+f.close()
