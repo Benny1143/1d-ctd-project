@@ -39,7 +39,7 @@ def get_winnings(string: str):
     return winning_conditions
 
 
-def getMapInfo(mapID: str) -> tuple[dict, dict, tuple]:
+def get_map_info(mapID: str) -> tuple[dict, dict, tuple]:
     # Pesudo Values
     # user = (3, 5)
     # characters = {(3, 5): "我", (3, 4): "马"}
@@ -80,5 +80,5 @@ if __name__ == "__main__":
         "马蹄": WinningCondition("hoof", 4),
         "马路": WinningCondition("road", 2)
     }
-    print(getMapInfo(1))
+    print(get_map_info(1))
     print(write_map_to_file(1, characters, winning_conditions))

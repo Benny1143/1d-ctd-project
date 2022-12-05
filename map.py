@@ -1,4 +1,4 @@
-from filesystem import getMapInfo
+from filesystem import get_map_info
 from typing import Literal
 import colors
 
@@ -17,7 +17,7 @@ class Map():
     def __init__(self, mapID, dual: bool = False):
         self.dual = dual
         self.mapID = mapID
-        self.characters, self.winningConditions, user = getMapInfo(mapID)
+        self.characters, self.winningConditions, user = get_map_info(mapID)
         if type(user) == list:
             self.user = user
         elif type(user) == tuple:
