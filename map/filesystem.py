@@ -89,7 +89,6 @@ if __name__ == "__main__":
 
 import glob
 txt_files = glob.glob("map/*.txt") 
-print (txt_files)
 cleartxt_files = []
 for i in txt_files:
     i = i[4:-4]
