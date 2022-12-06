@@ -3,12 +3,19 @@ class WinningCondition:
     def __init__(self, name, point):
         self.name = name
         self.point = point
+        self.won = False
 
     def name(self) -> str:
         return self.name
 
     def point(self) -> str:
         return self.point
+
+    def won(self):
+        return self.won
+        
+    def matched(self):
+        self.won = True
 
 
 def get_character(string: str) -> tuple[dict[tuple[int, int], str], tuple[int, int]]:

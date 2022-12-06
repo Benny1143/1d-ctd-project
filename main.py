@@ -92,6 +92,9 @@ Enter your name (1-7 characters): '''
         # https://stackoverflow.com/questions/11918999/key-listeners-in-python
 
         def on_press(key: KeyCode | Key | None) -> Literal[False] | None:
+            if map.end:
+                return False
+
             def move_character(k: str, user_id: int = 0) -> None:
                 q.put((k, user_id))
             if key == keyboard.Key.esc:
@@ -120,6 +123,10 @@ Enter your name (1-7 characters): '''
                 (k, user_id) = data
                 if map.move_character(k, user_id) == False:
                     self.set_error("Something is blocking you")
+                if map.end:
+                    self.set_error("Press WASD or Arrow Key to Continue......")
+                    print_map(map)
+                    break
                 print_map(map)
                 q.task_done()
 
@@ -138,9 +145,10 @@ Enter your name (1-7 characters): '''
         listener = keyboard.Listener(on_press=on_press)
         listener.start()  # start to listen on a separate thread
         listener.join()  # remove if main thread is polling self.keys
-        q.put(False)
-        self.set_error("Press Enter to Continue......")
-        print_map(map, True)
+        if map.end is False:
+            q.put(False)
+            self.set_error("Press Enter to Continue......")
+            print_map(map, True)
 
     # Other helpers
 
