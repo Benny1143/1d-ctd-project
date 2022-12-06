@@ -1,4 +1,4 @@
-from filesystem import get_map_info
+from map.filesystem import get_map_info
 from typing import Literal
 import colors
 
