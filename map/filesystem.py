@@ -88,5 +88,11 @@ if __name__ == "__main__":
     print(write_map_to_file(1, characters, winning_conditions))
 
 import glob
-txt_files = glob.glob("map/*.txt")
-print(txt_files)
+txt_files = glob.glob("map/*.txt") 
+print (txt_files)
+cleartxt_files = []
+for i in txt_files:
+    i = i[4:-4]
+    cleartxt_files.append(i)
+
+print(cleartxt_files)
