@@ -1,6 +1,7 @@
 from filesystem import get_map_info
 from typing import Literal
 import colors
+from help import check_win
 
 
 def dict_to_map(dd: dict) -> str:
@@ -18,6 +19,7 @@ class Map():
         self.dual = dual
         self.mapID = mapID
         self.characters, self.winningConditions, user = get_map_info(mapID)
+        self.end = False
         if type(user) == list:
             self.user = user
         elif type(user) == tuple:
@@ -65,6 +67,20 @@ class Map():
         def is_character(cor: tuple) -> bool:
             return self.characters.get(cor) in ["我", "他"]
 
+        def check_winning(coordinate: tuple[int, int]):
+            characters = self.characters
+            winning_conditions = self.winningConditions
+            character = characters.get(coordinate)
+            changes = check_win(character, coordinate,
+                                characters, winning_conditions)
+            if changes:
+                # Check if all winning conditions is sastify
+                for name in winning_conditions:
+                    wc = winning_conditions[name]
+                    if not wc.won:
+                        break
+                self.end = True
+
         user = self.user[user_id]
         x, y = user
 
@@ -83,7 +99,7 @@ class Map():
                         if y+1 == 5:
                             return False
                         self.updateCharacters(user, ahead)
-
+                        check_winning(ahead)
         elif key == "a":
             # Check for left wall
             if x == 5:
@@ -99,6 +115,7 @@ class Map():
                         if x+1 == 5:
                             return False
                         self.updateCharacters(user, ahead)
+                        check_winning(ahead)
 
         elif key == "s":
             # Check for bottom wall
@@ -115,6 +132,7 @@ class Map():
                         if y-1 == 1:
                             return False
                         self.updateCharacters(user, ahead)
+                        check_winning(ahead)
 
         elif key == "d":
             # Check for right wall
@@ -131,6 +149,7 @@ class Map():
                         if x-1 == 1:
                             return False
                         self.updateCharacters(user, ahead)
+                        check_winning(ahead)
 
         # Update user coordinates
         self.user[user_id] = user

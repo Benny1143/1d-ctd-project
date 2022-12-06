@@ -89,9 +89,9 @@ def update_win_state(ls, win_cond):
         # if phrase is in dictionary of phrase
         if i in win_cond:
             # check if the phrase is double counted
-            if win_cond.won is False:
+            if win_cond[i].won is False:
                 # call method .matched to count the score ONCE
-                win_cond.matched()
+                win_cond[i].matched()
                 # return boolean to indicate if any change has been made, be it 1 change or many changes
                 changes = True
     return changes
