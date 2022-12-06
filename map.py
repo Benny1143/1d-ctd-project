@@ -8,7 +8,7 @@ def dict_to_map(dd: dict) -> str:
     s = "==================\n"
     ls = list(["。"] * 5 for a in range(5))
     for (x, y), char in dd.items():
-        ls[5-y][5-x] = char
+        ls[5-y][x-1] = char
     for row in ls:
         s += "[ " + " ".join(row) + " ]\n"
     return s + "=================="
@@ -78,7 +78,7 @@ class Map():
                 for name in winning_conditions:
                     wc = winning_conditions[name]
                     if not wc.won:
-                        break
+                        return
                 self.end = True
 
         user = self.user[user_id]
@@ -100,7 +100,7 @@ class Map():
                             return False
                         self.updateCharacters(user, ahead)
                         check_winning(ahead)
-        elif key == "a":
+        elif key == "d":
             # Check for left wall
             if x == 5:
                 return False
@@ -134,7 +134,7 @@ class Map():
                         self.updateCharacters(user, ahead)
                         check_winning(ahead)
 
-        elif key == "d":
+        elif key == "a":
             # Check for right wall
             if x == 1:
                 return False
