@@ -16,7 +16,7 @@ class GameManagement(TerminalManager):
     def __init__(self):
         super().__init__()
         self.map_id = 1
-        self.name = "Benny"
+        self.name = "benny"
         self.highscore = None
         self.dual_mode = False
 
@@ -41,7 +41,7 @@ Enter your name (1-7 characters): '''
             if name == "0":
                 self.switch_inplace()
             else:
-                self.name = name
+                self.name = name.lower()
             self.main_menu()
 
     def main_menu(self) -> None:
@@ -183,6 +183,9 @@ Enter your name (1-7 characters): '''
         title = "Highscores\n==========="
         highscores = self.get_highscores()
         highscore_string = ""
+        # https://stackoverflow.com/questions/613183/how-do-i-sort-a-dictionary-by-value
+        highscores = {k: v for k, v in sorted(
+            highscores.items(), key=lambda item: item[1], reverse=True)}
         hs_keys = list(highscores.keys())
         for i in range(3):
             if (i + 1) > len(hs_keys):
