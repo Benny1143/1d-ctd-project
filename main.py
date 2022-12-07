@@ -2,7 +2,7 @@ from pynput import keyboard
 from help import *
 from map import Map
 from tm import TerminalManager, colors
-from firebase import get_highscores, get_user_scores_by_map
+from firebase import get_highscores, get_user_scores_by_map, get_user_map_scores
 from typing import Literal
 from pynput.keyboard import Key, KeyCode
 from om import OptionManager
@@ -183,8 +183,13 @@ Enter your name (1-7 characters): '''
         return title + (highscore_string if highscore_string else "\nNil") + "\n"
 
     def stage_selection(self):
+        score_dict = {}
+        all_scores = get_user_map_scores(self.name)
+        for data in all_scores.each():
+            score_dict[data.key()] = data.val()
+
         def get_score_string(map_id):
-            score = get_user_scores_by_map(self.name, map_id)
+            score = score_dict.get(map_id)
             return f" (scored {score}pt)" if score else ""
 
         om = OptionManager()
