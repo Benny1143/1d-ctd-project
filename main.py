@@ -151,8 +151,8 @@ Enter your name (1-7 characters): '''
                 if map.move_character(k, user_id) == False:
                     self.set_error("Something is blocking you")
                 if map.end:
-                    self.set_error("Press WASD or Arrow Key to Continue......")
-                    print_map(map)
+                    self.set_error("Press Enter to Continue......")
+                    print_map(map, True)
                     break
                 print_map(map)
                 q.task_done()
