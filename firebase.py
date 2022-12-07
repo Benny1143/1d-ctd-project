@@ -51,3 +51,20 @@ def get_user_scores_by_map(name, map) -> int:
     if fallback:
         return get_user_scores(name)[map]
     return db.child("users").child(name).child("map").child(map).get().val()
+
+
+def update_user_scores_by_map(name, map, score):
+    # name (str), map (str), score (int)
+    db.child("users").child(name).child("map").child(map).set(score)
+
+#update_user_scores_by_map("peter", "1", 4)
+
+def update_user_scores(name):
+    # name (str)
+    total = 0
+    for i in db.child("users").child(name).child("map").get().val():
+        if i != None:
+            total += i
+    db.child("highscores").child(name).set(total)
+    
+#update_user_scores("a")
