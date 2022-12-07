@@ -22,6 +22,7 @@ def get_character(string: str) -> tuple[dict[tuple[int, int], str], tuple[int, i
     #  string example: "我1,1;马2,2"
     characters = {}
     user_coordinate = ()
+    user = False
     for e in string.split(";"):
         char = e[0]
         x, y = e[1:].split(",")
@@ -30,9 +31,9 @@ def get_character(string: str) -> tuple[dict[tuple[int, int], str], tuple[int, i
         characters[(x, y)] = char
         if "我" == char:
             user_coordinate = (x, y)
-    # Print Error if User is not found
-        else:
-            print("Error")
+            user = True
+    if user is False:
+        print("Error")
     # Return:
     # characters = {(3, 5): "我", (3, 4): "马"}
     # user = (3, 5)
