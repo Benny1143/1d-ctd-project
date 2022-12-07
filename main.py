@@ -1,5 +1,5 @@
 from pynput import keyboard
-from help import *
+from help import calculate_total_score, check_win
 from map import Map
 from tm import TerminalManager
 from firebase import get_highscores, get_user_map_scores, update_user_scores_by_map
