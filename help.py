@@ -100,3 +100,10 @@ def update_win_state(ls, win_cond):
 
 
 #check_win("c", (1,1), {(1,2): "d", (2,1): "e"}, {})
+
+def calculate_total_score(win_cond):
+    total = 0
+    for i in win_cond:
+        if win_cond[i].won:
+            total += win_cond[i].point
+    return total
