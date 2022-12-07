@@ -86,15 +86,17 @@ Enter your name (1-7 characters): '''
             tmp_map_str[0] += "     " + "PHRASES"
             i = 1
             for cn in map.winningConditions:
-                print(cn, map.winningConditions[cn].won)
                 if map.winningConditions[cn].won:
-                    tmp_map_str[i] += "     " + cn + ": " + str(map.winningConditions[cn].won) + " (" + map.winningConditions[cn].name + ")"
+                    tmp_map_str[i] += "     " + cn + \
+                        " (" + map.winningConditions[cn].name + ")"
                 else:
-                    tmp_map_str[i] += "     " + "##: " + str(map.winningConditions[cn].won) + " (" + map.winningConditions[cn].name + ")"
+                    tmp_map_str[i] += "     ## (" + \
+                        map.winningConditions[cn].name + ")"
                 i += 1
-            tmp_map_str[i+1] += "     " + "TOTAL SCORE: " + str(calculate_total_score(map.winningConditions))
+            tmp_map_str[i+1] += "     " + "TOTAL SCORE: " + \
+                str(calculate_total_score(map.winningConditions))
             new_map_str = "\n".join(tmp_map_str)
-            ##   
+            ##
 
             self.print(
                 "\n".join([title, new_map_str, control_str]), last_line, False)
