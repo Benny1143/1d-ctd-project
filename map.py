@@ -47,6 +47,8 @@ class Map():
         self.copy_winningConditions = self.winningConditions.copy()
 
     def restart(self) -> None:
+        for cc in self.winningConditions:
+            self.winningConditions[cc].won = False
         self.user = self.copy_user
         self.characters = self.copy_characters.copy()
         self.winningConditions = self.copy_winningConditions.copy()
