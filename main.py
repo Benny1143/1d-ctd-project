@@ -1,8 +1,8 @@
 from pynput import keyboard
 from help import *
 from map import Map
-from tm import TerminalManager, colors
-from firebase import get_highscores, get_user_scores_by_map, get_user_map_scores, update_user_scores_by_map
+from tm import TerminalManager
+from firebase import get_highscores, get_user_map_scores, update_user_scores_by_map
 from typing import Literal
 from pynput.keyboard import Key, KeyCode
 from om import OptionManager
