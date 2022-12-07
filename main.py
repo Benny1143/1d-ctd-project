@@ -21,6 +21,7 @@ class GameManagement(TerminalManager):
         self.name = "benny"
         self.highscore = None
         self.dual_mode = False
+        self.unlocked = False
 
     # Pages
     def main(self) -> None:
@@ -72,7 +73,8 @@ Enter your name (1-7 characters): '''
             om.add_option("3", "Select Stage", self.stage_selection)
 
             # Check if user has played stage 1 & 2
-            if map_score_dict.get(1) and map_score_dict.get(2):
+            if map_score_dict.get("1") and map_score_dict.get("2"):
+                self.unlocked = True
                 om.add_option("4", "Map Creator", self.map_creator)
 
             om.add_option("0", "Exit", exit)
@@ -382,12 +384,23 @@ Enter Action: """
             return f" (scored {score}pt)" if score else ""
 
         om = OptionManager()
-        om.add_option("1", "Stage 1" + get_score_string(1), "1")
-        om.add_option("2", "Stage 2" + get_score_string(2), "2")
-        # TODO: Print All Stages Avaliable
+        om.add_option("1", "Stage 1" + get_score_string("1"), "1")
+        om.add_option("2", "Stage 2" + get_score_string("2"), "2")
+
+        if self.unlocked:
+            map_ids = get_all_map_id()
+            map_ids.remove("1")
+            map_ids.remove("2")
+            map_ids = sorted(list(map_ids))
+            i = 3
+            for map_id in map_ids:
+                om.add_option(i, map_id + get_score_string(map_id), map_id)
+                i += 1
+
         options_string = om.option_printer("Select Stage")
-        stage = om.input(options_string, self.print, self.set_error)
-        self.map_id = stage
+        option = om.input(options_string, self.print, self.set_error)
+        option = om.get_option(option)
+        self.map_id = option
 
 
 pm = GameManagement()
