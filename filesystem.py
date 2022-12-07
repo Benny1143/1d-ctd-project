@@ -94,7 +94,7 @@ def get_all_map_id():
     for i in txt_files:
         i = i[4:-4]
         cleartxt_files.append(i)
-    return i
+    return cleartxt_files
 
 
 if __name__ == "__main__":
