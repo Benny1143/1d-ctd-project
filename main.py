@@ -74,12 +74,30 @@ Enter your name (1-7 characters): '''
     def game(self) -> None:
         map = Map(self.map_id, self.dual_mode)
         title = f"Stage {self.map_id}"
+
         control_str = f"{'':2}w{'':3}{'':1}r - Restart\na s d{'':1}{'':1}e - Exit{'':3}"
 
         def print_map(map: Map, last_line: bool = False) -> None:
             map_str = map.get_map()
+
+            ##
+            tmp_map_str = map_str.split("\n")
+            # range of phrases to complete
+            tmp_map_str[0] += "     " + "PHRASES"
+            i = 1
+            for cn in map.winningConditions:
+                print(cn, map.winningConditions[cn].won)
+                if map.winningConditions[cn].won:
+                    tmp_map_str[i] += "     " + cn + ": " + str(map.winningConditions[cn].won) + " (" + map.winningConditions[cn].name + ")"
+                else:
+                    tmp_map_str[i] += "     " + "##: " + str(map.winningConditions[cn].won) + " (" + map.winningConditions[cn].name + ")"
+                i += 1
+            tmp_map_str[i+1] += "     " + "TOTAL SCORE: " + str(calculate_total_score(map.winningConditions))
+            new_map_str = "\n".join(tmp_map_str)
+            ##   
+
             self.print(
-                "\n".join([title, map_str, control_str]), last_line, False)
+                "\n".join([title, new_map_str, control_str]), last_line, False)
         self.clear()
         print_map(map)
 
