@@ -1,2 +1,2 @@
-我3,5;马3,4
-马蹄,hoof,4;马路,road,2
+我1,1;马2,2;路3,3;上4,4
+马上,immediate,4;马路,road,2;路上,on the road,3;上路,ready to leave,1

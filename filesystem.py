@@ -13,7 +13,7 @@ class WinningCondition:
 
     def won(self):
         return self.won
-        
+
     def matched(self):
         self.won = True
 
@@ -21,7 +21,7 @@ class WinningCondition:
 def get_character(string: str) -> tuple[dict[tuple[int, int], str], tuple[int, int]]:
     #  string example: "我1,1;马2,2"
     characters = {}
-    user = ()
+    user_coordinate = ()
     for e in string.split(";"):
         char = e[0]
         x, y = e[1:].split(",")
@@ -30,12 +30,14 @@ def get_character(string: str) -> tuple[dict[tuple[int, int], str], tuple[int, i
         characters[(x, y)] = char
         if "我" == char:
             user_coordinate = (x, y)
-    #Print Error if User is not found
+    # Print Error if User is not found
         else:
             print("Error")
+    # Return:
+    # characters = {(3, 5): "我", (3, 4): "马"}
+    # user = (3, 5)
     return characters, user_coordinate
-# characters = {(3, 5): "我", (3, 4): "马"}
-# user = (3, 5)
+
 
 def get_winnings(string: str) -> dict[str, WinningCondition]:
     # string example: "马蹄,hoof,4;马路,road,2"
@@ -46,17 +48,18 @@ def get_winnings(string: str) -> dict[str, WinningCondition]:
         name = str(a[1])
         point = int(a[2])
         winning_conditions[winning_character] = WinningCondition(name, point)
+    # Return:
+    # winning_conditions = {
+    #     "马蹄": WinningCondition("hoof", 4),
+    #     "马路": WinningCondition("road", 2)
+    # }
     return winning_conditions
-# winning_conditions = {
-#     "马蹄": WinningCondition("hoof", 4),
-#     "马路": WinningCondition("road", 2)
-#      }
+
 
 def get_map_info(mapID: str) -> tuple[dict[tuple[int, int], str], dict[str, WinningCondition], tuple[int, int]]:
-   
-    #Handle File not found error
+    # Handle File not found error
     try:
-        with open("map\\" + str(mapID) + ".txt", "r", encoding="utf8") as f:
+        with open("map/" + str(mapID) + ".txt", "r", encoding="utf8") as f:
             lines = f.read()
             (characterstring, winningstring) = lines.split("\n")
             characters, user_coordinate = get_character(characterstring)
@@ -80,8 +83,18 @@ def dict_to_string(characters: dict[tuple[int, int], str], winning_conditions: d
 
 def write_map_to_file(map_id: str, characters: dict[tuple[int, int], str], winning_conditions: dict[str, WinningCondition]):
     data = dict_to_string(characters, winning_conditions)
-    with open("map\\"+str(map_id) + ".txt", "w", encoding="utf8") as f:
+    with open("map/"+str(map_id) + ".txt", "w", encoding="utf8") as f:
         f.write(data)
+
+
+def get_all_map_id():
+    import glob
+    txt_files = glob.glob("map/*.txt")
+    cleartxt_files = []
+    for i in txt_files:
+        i = i[4:-4]
+        cleartxt_files.append(i)
+    return i
 
 
 if __name__ == "__main__":
@@ -90,15 +103,7 @@ if __name__ == "__main__":
     winning_conditions = {
         "马蹄": WinningCondition("hoof", 4),
         "马路": WinningCondition("road", 2)
-     }
+    }
     print(get_map_info(1))
     print(write_map_to_file(1, characters, winning_conditions))
-
-import glob
-txt_files = glob.glob("map/*.txt") 
-cleartxt_files = []
-for i in txt_files:
-    i = i[4:-4]
-    cleartxt_files.append(i)
-
-print(cleartxt_files)
+    # print(cleartxt_files)

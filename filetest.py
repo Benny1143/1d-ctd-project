@@ -1,4 +1,4 @@
-from map.filesystem import get_character, dict_to_string, get_winnings
+from filesystem import get_character, dict_to_string, get_winnings
 f = open("1.txt", "r", encoding="utf8")
 lines = f.read()
 (characterstring, winningstring) = lines.split("\n")

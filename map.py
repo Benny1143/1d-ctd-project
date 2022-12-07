@@ -1,4 +1,4 @@
-from map.filesystem import get_map_info
+from filesystem import get_map_info
 from typing import Literal
 import colors
 from help import check_win
