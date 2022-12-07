@@ -165,6 +165,9 @@ Enter your name (1-7 characters): '''
         title = "Highscores\n==========="
         highscores = self.get_highscores()
         highscore_string = ""
+        # https://stackoverflow.com/questions/613183/how-do-i-sort-a-dictionary-by-value
+        highscores = {k: v for k, v in sorted(
+            highscores.items(), key=lambda item: item[1], reverse=True)}
         hs_keys = list(highscores.keys())
         for i in range(3):
             if (i + 1) > len(hs_keys):
