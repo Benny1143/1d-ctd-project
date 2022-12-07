@@ -84,22 +84,24 @@ Enter your name (1-7 characters): '''
 
         def print_map(map: Map, last_line: bool = False) -> None:
             map_str = map.get_map()
-
             ##
+            spacing = "     "
             tmp_map_str = map_str.split("\n")
             # range of phrases to complete
-            tmp_map_str[0] += "     " + "PHRASES"
+            tmp_map_str[0] += spacing + "PHRASES"
             i = 1
-            for cn in map.winningConditions:
-                if map.winningConditions[cn].won:
-                    tmp_map_str[i] += "     " + cn + \
-                        " (" + map.winningConditions[cn].name + ")"
-                else:
-                    tmp_map_str[i] += "     ## (" + \
-                        map.winningConditions[cn].name + ")"
+            number_of_won = 0
+            for cc in map.winningConditions:
+                wc = map.winningConditions[cc]
+                tmp_map_str[i] += spacing + (cc if wc.won else "##  ")
+                tmp_map_str[i] += f" ({wc.name}) " + str(wc.point) + "pts"
+                if wc.won:
+                    number_of_won += 1
                 i += 1
-            tmp_map_str[i+1] += "     " + "TOTAL SCORE: " + \
+            tmp_map_str[i+1] += spacing + "TOTAL SCORE: " + \
                 str(calculate_total_score(map.winningConditions))
+            if number_of_won == len(map.winningConditions):
+                tmp_map_str[i+1] += " 🎉🎉🎉"
             new_map_str = "\n".join(tmp_map_str)
             ##
 
