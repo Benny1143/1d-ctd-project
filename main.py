@@ -287,7 +287,7 @@ Enter Action: """
                 break
             elif option == "s":
                 write_map_to_file(map_id, characters, winning_conditions)
-                self.error(map_id + " map saved")
+                self.set_error(map_id + " map saved")
                 break
             elif option == "d":
                 while True:
