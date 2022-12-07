@@ -54,7 +54,8 @@ def get_user_scores_by_map(name, map) -> int:
 
 
 def get_user_map_scores(name):
-    return db.child("users").child(name).child("map").get()
+    dir = db.child("users").child(name).child("map")
+    return dir
 
 
 def update_user_scores_by_map(name, map, score):
@@ -68,7 +69,7 @@ def update_user_scores_by_map(name, map, score):
 def update_user_scores(name):
     # name (str)
     total = 0
-    for i in get_user_map_scores(name).each():
+    for i in db.child("users").child(name).child("map").get().each():
         i = i.val()
         if i != None:
             total += i

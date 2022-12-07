@@ -288,9 +288,16 @@ Enter Action: """
             elif option == "e":
                 break
             elif option == "s":
-                write_map_to_file(map_id, characters, winning_conditions)
-                self.set_error(map_id + " map saved")
-                break
+                user_exist = False
+                for coor in characters:
+                    if characters[coor] == "我":
+                        user_exist = True
+                        break
+                if user_exist:
+                    write_map_to_file(map_id, characters, winning_conditions)
+                    self.set_error(map_id + " map saved")
+                    break
+                self.set_error("我 does not exist, unable to save map")
             elif option == "d":
                 while True:
                     map_string = get_map_wc_string()
@@ -369,11 +376,19 @@ Enter Action: """
 
     def get_user_map_dic(self):
         score_dict = {}
-        all_scores = get_user_map_scores(self.name)
-        if all_scores.val() is None:
+        values = get_user_map_scores(self.name).get().val()
+        if values is None:
             return score_dict
-        for data in all_scores.each():
-            score_dict[data.key()] = data.val()
+        if type(values) == list:
+            for i in range(1, len(values)):
+                print(values[i])
+            values = zip(get_user_map_scores(
+                self.name).shallow().get().val(), values[1:])
+            for key, score in values:
+                score_dict[key] = score
+        else:
+            for data in get_user_map_scores(self.name).get().each():
+                score_dict[str(data.key())] = data.val()
         return score_dict
 
     def stage_selection(self):
