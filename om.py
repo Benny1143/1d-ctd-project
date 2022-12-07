@@ -14,7 +14,10 @@ class OptionManager:
         self._dict_options = {}
         pass
 
-    def add_option(self, option, name, function):
+    def add_option(self, option, name, function = None):
+        if function is None:
+            function = name
+        option = str(option)
         self._options.append(Option(option, name, function))
         self._dict_options[option] = function
 

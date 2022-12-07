@@ -1,11 +1,12 @@
 from pynput import keyboard
-from help import calculate_total_score, check_win
+from help import calculate_total_score
 from map import Map
 from tm import TerminalManager
 from firebase import get_highscores, get_user_map_scores, update_user_scores_by_map
 from typing import Literal
 from pynput.keyboard import Key, KeyCode
 from om import OptionManager
+from filesystem import get_all_map_id
 # https://docs.python.org/3/library/queue.html
 import threading
 import queue
@@ -193,7 +194,33 @@ Enter your name (1-7 characters): '''
             print_map(map, True)
 
     def map_creator(self) -> None:
-        print("Map Creator")
+        # Select Map (Cannot select map 1 & 2)
+        map_ids = get_all_map_id()
+        map_ids_copy = map_ids.copy()
+        map_ids.remove("1")
+        map_ids.remove("2")
+        map_ids = sorted(list(map_ids))
+
+        om = OptionManager()
+        om.add_option(0, "**New Map**")
+
+        i = 1
+        for map_id in map_ids:
+            om.add_option(i, map_id)
+            i += 1
+        options_string = om.option_printer("Select Map")
+        option = om.input(options_string, self.print, self.set_error)
+        if option == "0":
+            while True:
+                map_id = self.print("Enter new map name: ", True)
+                # Check if can have filename
+                if map_id in map_ids_copy:
+                    self.set_error("Filename has been used")
+                else:
+                    break
+        else:
+            map_id = om.get_option(option)
+        print(map_id)
 
     # Other helpers
 

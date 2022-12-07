@@ -90,10 +90,10 @@ def write_map_to_file(map_id: str, characters: dict[tuple[int, int], str], winni
 def get_all_map_id():
     import glob
     txt_files = glob.glob("map/*.txt")
-    cleartxt_files = []
+    cleartxt_files = set()
     for i in txt_files:
         i = i[4:-4]
-        cleartxt_files.append(i)
+        cleartxt_files.add(i)
     return cleartxt_files
 
 
