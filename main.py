@@ -1,12 +1,12 @@
 from pynput import keyboard
 from help import calculate_total_score
-from map import Map
+from map import Map, dict_to_map
 from tm import TerminalManager
 from firebase import get_highscores, get_user_map_scores, update_user_scores_by_map
 from typing import Literal
 from pynput.keyboard import Key, KeyCode
 from om import OptionManager
-from filesystem import get_all_map_id
+from filesystem import WinningCondition, get_all_map_id, get_map_info, write_map_to_file
 # https://docs.python.org/3/library/queue.html
 import threading
 import queue
@@ -210,6 +210,10 @@ Enter your name (1-7 characters): '''
             i += 1
         options_string = om.option_printer("Select Map")
         option = om.input(options_string, self.print, self.set_error)
+
+        characters = {}
+        winning_conditions = {}
+
         if option == "0":
             while True:
                 map_id = self.print("Enter new map name: ", True)
@@ -220,7 +224,118 @@ Enter your name (1-7 characters): '''
                     break
         else:
             map_id = om.get_option(option)
-        print(map_id)
+            # Get map info
+            data = get_map_info(map_id)
+            characters = data[0]
+            winning_conditions = data[1]
+
+        # Map Creator
+        def get_map_wc_string():
+            i = 1
+            map = dict_to_map(characters).split("\n")
+            map[0] += " Winning Conditions"
+            for cc in winning_conditions:
+                wc = winning_conditions[cc]
+                map[i] += f" {cc} {wc.name} {wc.point}pts"
+                i += 1
+            return "\n".join(map)
+
+        while True:
+            map_string = get_map_wc_string()
+            input_string = """
+Actions
+s - save
+a - add character
+d - delete character
+e - exit
+wa - add winninng conditions
+wd - delete winning conditions
+Enter Action: """
+            option = self.print(
+                f"Map Name: {map_id}\n" + map_string + input_string, True)
+            if option == "a":
+                while True:
+                    map_string = get_map_wc_string()
+                    qn1 = "\nEnter a chinese character (e - exit): "
+                    chi_char = self.print(map_string + qn1, True)
+
+                    if chi_char == "e":
+                        break
+                    if len(chi_char) != 1:
+                        self.set_error("Require a Chinese Characters")
+                        continue
+
+                    map_string += qn1 + chi_char + "\n"
+
+                    # Ask for coordinate inputs
+                    qn2 = "enter the x coordinate: "
+                    x_cor = int(self.print(map_string + qn2, True))
+                    if x_cor <= 0 or x_cor > 5:
+                        self.set_error("Invalid x_cor not between 1-5")
+                        continue
+
+                    map_string += qn2 + str(x_cor) + "\n"
+
+                    qn3 = "enter the y coordinate: "
+                    y_cor = int(self.print(map_string + qn3, True))
+                    if y_cor <= 0 or y_cor > 5:
+                        self.set_error("Invalid y_cor not between 1-5")
+                        continue
+
+                    characters[(x_cor, y_cor)] = chi_char
+            elif option == "e":
+                break
+            elif option == "s":
+                write_map_to_file(map_id, characters, winning_conditions)
+                self.error(map_id + " map saved")
+                break
+            elif option == "d":
+                while True:
+                    map_string = get_map_wc_string()
+                    question = "\nChinese Character to be deleted (e - exit): "
+                    cc = self.print(map_string + question, True)
+                    if cc == "e":
+                        break
+                    # Check if cc exist
+                    # Delete cc from dic
+                    removed = False
+                    for coor in characters.copy():
+                        if cc == characters[coor]:
+                            del characters[coor]
+                            removed = True
+                            continue
+                    if removed == False:
+                        self.set_error("Unable to find character")
+            elif option == "wa":
+                map_string = get_map_wc_string()
+                qn1 = "\nEnter two Chinese characters (e - exit): "
+                win_con = self.print(map_string + qn1, True)
+                if len(win_con) != 2 or win_con == "e":
+                    continue
+
+                map_string += qn1 + win_con
+                qn2 = "\nEnter English translation: "
+                eng = self.print(map_string + qn2, True)
+
+                map_string += qn2 + eng
+                qn3 = "\nEnter points: "
+                pts = self.print(map_string + qn3, True)
+
+                winning_conditions[win_con] = WinningCondition(eng, pts)
+            elif option == "wd":
+                while True:
+                    map_string = get_map_wc_string()
+                    cc = self.print(
+                        map_string + "\nWinning Condition to be deleted (e - exit): ", True)
+                    if cc == "e":
+                        break
+                    if cc in winning_conditions:
+                        del winning_conditions[cc]
+                        self.set_error(cc + " deleted")
+                    else:
+                        self.set_error("Unable to find character")
+            else:
+                self.set_error("Invalid Action")
 
     # Other helpers
 
