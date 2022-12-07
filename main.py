@@ -2,9 +2,10 @@ from pynput import keyboard
 from help import *
 from map import Map
 from tm import TerminalManager, colors
-from firebase import get_highscores, get_user_scores_by_map
+from firebase import get_highscores, get_user_scores_by_map, get_user_map_scores, update_user_scores_by_map
 from typing import Literal
 from pynput.keyboard import Key, KeyCode
+from om import OptionManager
 # https://docs.python.org/3/library/queue.html
 import threading
 import queue
@@ -22,14 +23,14 @@ class GameManagement(TerminalManager):
 
     # Pages
     def main(self) -> None:
-        page_string = '''   ____   _        ____   
-U /"___| |"|    U | __")u 
-\| | u U | | u   \|  _ \/ 
- | |/__ \| |/__   | |_) | 
-  \____| |_____|  |____/  
- _// \\\\  //  \\\\  _|| \\\\_  
+        page_string = '''   ____   _        ____
+U /"___| |"|    U | __")u
+\| | u U | | u   \|  _ \/
+ | |/__ \| |/__   | |_) |
+  \____| |_____|  |____/
+ _// \\\\  //  \\\\  _|| \\\\_
 (__)(__)(_")("_)(__) (__)
-Welcome to Chinese Freshmore Programme 
+Welcome to Chinese Freshmore Programme
 Enter your name (1-7 characters): '''
         while True:
             # Restrict name input to 7 characters
@@ -47,33 +48,37 @@ Enter your name (1-7 characters): '''
     def main_menu(self) -> None:
         # Title
         title = f"Main Menu\n\nWelcome {self.name}\n\n"
-        # Highscore String
-        hs_string = self.get_highscore_string() + "\n"
 
         def switch_dual():
             self.dual_mode = not self.dual_mode
 
         while True:
+            # Highscore String
+            hs_string = self.get_highscore_string() + "\n"
             # Options
             play_string = "Play Stage " + str(self.map_id)
             score = get_user_scores_by_map(self.name, self.map_id)
             if score:
                 play_string += f" (scored {score}pt)"
-            options = {"1": (play_string, self.game), "2": (
-                f"Dual Mode ({self.dual_mode})", switch_dual), "0": ("Exit", exit)}
-            options_string = GameManagement.option_printer(options)
+
+            om = OptionManager()
+            om.add_option("1", play_string, self.game)
+            om.add_option("2", f"Dual Mode ({self.dual_mode})", switch_dual)
+            om.add_option("3", "Select Stage", self.stage_selection)
+            om.add_option("0", "Exit", exit)
+
+            options_string = om.option_printer()
 
             self.refresh_highscore()
-            option = self.print(title + hs_string + options_string, True)
-            # Option Handler
-            if option in options:
-                options.get(option)[1]()
-            else:
-                self.set_error("Invalid Option")
+
+            string = title + hs_string + options_string
+            option = om.input(string, self.print, self.set_error)
+            om.get_option(option)()
 
     def game(self) -> None:
-        map = Map(self.map_id, self.dual_mode)
-        title = f"Stage {self.map_id}"
+        map_id = self.map_id
+        map = Map(map_id, self.dual_mode)
+        title = f"Stage {map_id}"
 
         control_str = f"{'':2}w{'':3}{'':1}r - Restart\na s d{'':1}{'':1}e - Exit{'':3}"
 
@@ -165,6 +170,12 @@ Enter your name (1-7 characters): '''
         listener = keyboard.Listener(on_press=on_press)
         listener.start()  # start to listen on a separate thread
         listener.join()  # remove if main thread is polling self.keys
+
+        # Update Score to Firebase
+        total_score = calculate_total_score(map.winningConditions)
+        update_user_scores_by_map(self.name, map_id, total_score)
+        self.refresh_highscore()
+
         if map.end is False:
             q.put(False)
             self.set_error("Press Enter to Continue......")
@@ -182,7 +193,7 @@ Enter your name (1-7 characters): '''
 
     # get_highscore_string return the highscore in string format for printing
     def get_highscore_string(self) -> str:
-        title = "Highscores\n==========="
+        title = "Highscores \n==========="
         highscores = self.get_highscores()
         highscore_string = ""
         # https://stackoverflow.com/questions/613183/how-do-i-sort-a-dictionary-by-value
@@ -198,16 +209,23 @@ Enter your name (1-7 characters): '''
             highscore_string += f"\n{name:8}{score:3}"
         return title + (highscore_string if highscore_string else "\nNil") + "\n"
 
-    # get_highscore_string takes in a list of {(i, option)}
-    # returns the formatted string
-    @staticmethod
-    def option_printer(options: list) -> str:
-        # options: [option]
-        # Dic to List converter
-        ls = list(map(lambda e: (e[0], e[1][0]), options.items()))
-        return "{color}Options:\n{options_string}\nEnter Option: {white}".format(
-            options_string='\n'.join(f"{i:>4}   {option}" for i, option in ls),
-            color=colors.Yellow, white=colors.White)
+    def stage_selection(self):
+        score_dict = {}
+        all_scores = get_user_map_scores(self.name)
+        for data in all_scores.each():
+            score_dict[data.key()] = data.val()
+
+        def get_score_string(map_id):
+            score = score_dict.get(map_id)
+            return f" (scored {score}pt)" if score else ""
+
+        om = OptionManager()
+        om.add_option("1", "Stage 1" + get_score_string(1), "1")
+        om.add_option("2", "Stage 2" + get_score_string(2), "2")
+        # TODO: Print All Stages Avaliable
+        options_string = om.option_printer("Select Stage")
+        stage = om.input(options_string, self.print, self.set_error)
+        self.map_id = stage
 
 
 pm = GameManagement()
