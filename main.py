@@ -368,6 +368,8 @@ Enter Action: """
     def get_user_map_dic(self):
         score_dict = {}
         all_scores = get_user_map_scores(self.name)
+        if all_scores.val() is None:
+            return score_dict
         for data in all_scores.each():
             score_dict[data.key()] = data.val()
         return score_dict
