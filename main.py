@@ -2,7 +2,7 @@ from pynput import keyboard
 from help import *
 from map import Map
 from tm import TerminalManager, colors
-from firebase import get_highscores, get_user_scores_by_map, get_user_map_scores
+from firebase import get_highscores, get_user_scores_by_map, get_user_map_scores, update_user_scores_by_map
 from typing import Literal
 from pynput.keyboard import Key, KeyCode
 from om import OptionManager
@@ -48,13 +48,13 @@ Enter your name (1-7 characters): '''
     def main_menu(self) -> None:
         # Title
         title = f"Main Menu\n\nWelcome {self.name}\n\n"
-        # Highscore String
-        hs_string = self.get_highscore_string() + "\n"
 
         def switch_dual():
             self.dual_mode = not self.dual_mode
 
         while True:
+            # Highscore String
+            hs_string = self.get_highscore_string() + "\n"
             # Options
             play_string = "Play Stage " + str(self.map_id)
             score = get_user_scores_by_map(self.name, self.map_id)
@@ -76,8 +76,9 @@ Enter your name (1-7 characters): '''
             om.get_option(option)()
 
     def game(self) -> None:
-        map = Map(self.map_id, self.dual_mode)
-        title = f"Stage {self.map_id}"
+        map_id = self.map_id
+        map = Map(map_id, self.dual_mode)
+        title = f"Stage {map_id}"
 
         control_str = f"{'':2}w{'':3}{'':1}r - Restart\na s d{'':1}{'':1}e - Exit{'':3}"
 
@@ -169,6 +170,12 @@ Enter your name (1-7 characters): '''
         listener = keyboard.Listener(on_press=on_press)
         listener.start()  # start to listen on a separate thread
         listener.join()  # remove if main thread is polling self.keys
+
+        # Update Score to Firebase
+        total_score = calculate_total_score(map.winningConditions)
+        update_user_scores_by_map(self.name, map_id, total_score)
+        self.refresh_highscore()
+
         if map.end is False:
             q.put(False)
             self.set_error("Press Enter to Continue......")

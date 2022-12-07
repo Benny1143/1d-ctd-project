@@ -60,6 +60,7 @@ def get_user_map_scores(name):
 def update_user_scores_by_map(name, map, score):
     # name (str), map (str), score (int)
     db.child("users").child(name).child("map").child(map).set(score)
+    update_user_scores(name)
 
 #update_user_scores_by_map("peter", "1", 4)
 
