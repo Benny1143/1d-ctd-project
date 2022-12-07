@@ -71,9 +71,9 @@ Enter your name (1-7 characters): '''
 
             self.refresh_highscore()
 
-            option = self.print(title + hs_string + options_string, True)
-            function = om.get_option(option)
-            function() if function else self.set_error("Invalid Option")
+            string = title + hs_string + options_string
+            option = om.input(string, self.print, self.set_error)
+            om.get_option(option)()
 
     def game(self) -> None:
         map = Map(self.map_id, self.dual_mode)
@@ -183,13 +183,17 @@ Enter your name (1-7 characters): '''
         return title + (highscore_string if highscore_string else "\nNil") + "\n"
 
     def stage_selection(self):
+        def get_score_string(map_id):
+            score = get_user_scores_by_map(self.name, map_id)
+            return f" (scored {score}pt)" if score else ""
+
         om = OptionManager()
-        om.add_option("1", "Stage 1", "1")
-        om.add_option("2", "Stage 2", "2")
-        # Print All Stages Avaliable
+        om.add_option("1", "Stage 1" + get_score_string(1), "1")
+        om.add_option("2", "Stage 2" + get_score_string(2), "2")
+        # TODO: Print All Stages Avaliable
         options_string = om.option_printer("Select Stage")
         stage = om.input(options_string, self.print, self.set_error)
-        self.stage = stage
+        self.map_id = stage
 
 
 pm = GameManagement()
