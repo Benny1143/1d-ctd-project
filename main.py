@@ -5,6 +5,7 @@ from tm import TerminalManager, colors
 from firebase import get_highscores, get_user_scores_by_map
 from typing import Literal
 from pynput.keyboard import Key, KeyCode
+from om import OptionManager
 # https://docs.python.org/3/library/queue.html
 import threading
 import queue
@@ -22,14 +23,14 @@ class GameManagement(TerminalManager):
 
     # Pages
     def main(self) -> None:
-        page_string = '''   ____   _        ____   
-U /"___| |"|    U | __")u 
-\| | u U | | u   \|  _ \/ 
- | |/__ \| |/__   | |_) | 
-  \____| |_____|  |____/  
- _// \\\\  //  \\\\  _|| \\\\_  
+        page_string = '''   ____   _        ____
+U /"___| |"|    U | __")u
+\| | u U | | u   \|  _ \/
+ | |/__ \| |/__   | |_) |
+  \____| |_____|  |____/
+ _// \\\\  //  \\\\  _|| \\\\_
 (__)(__)(_")("_)(__) (__)
-Welcome to Chinese Freshmore Programme 
+Welcome to Chinese Freshmore Programme
 Enter your name (1-7 characters): '''
         while True:
             # Restrict name input to 7 characters
@@ -59,17 +60,20 @@ Enter your name (1-7 characters): '''
             score = get_user_scores_by_map(self.name, self.map_id)
             if score:
                 play_string += f" (scored {score}pt)"
-            options = {"1": (play_string, self.game), "2": (
-                f"Dual Mode ({self.dual_mode})", switch_dual), "0": ("Exit", exit)}
-            options_string = GameManagement.option_printer(options)
+
+            om = OptionManager()
+            om.add_option("1", play_string, self.game)
+            om.add_option("2", f"Dual Mode ({self.dual_mode})", switch_dual)
+            om.add_option("3", "Select Stage", self.stage_selection)
+            om.add_option("0", "Exit", exit)
+
+            options_string = om.option_printer()
 
             self.refresh_highscore()
+
             option = self.print(title + hs_string + options_string, True)
-            # Option Handler
-            if option in options:
-                options.get(option)[1]()
-            else:
-                self.set_error("Invalid Option")
+            function = om.get_option(option)
+            function() if function else self.set_error("Invalid Option")
 
     def game(self) -> None:
         map = Map(self.map_id, self.dual_mode)
@@ -162,7 +166,7 @@ Enter your name (1-7 characters): '''
 
     # get_highscore_string return the highscore in string format for printing
     def get_highscore_string(self) -> str:
-        title = "Highscores\n==========="
+        title = "Highscores \n==========="
         highscores = self.get_highscores()
         highscore_string = ""
         # https://stackoverflow.com/questions/613183/how-do-i-sort-a-dictionary-by-value
@@ -178,16 +182,14 @@ Enter your name (1-7 characters): '''
             highscore_string += f"\n{name:8}{score:3}"
         return title + (highscore_string if highscore_string else "\nNil") + "\n"
 
-    # get_highscore_string takes in a list of {(i, option)}
-    # returns the formatted string
-    @staticmethod
-    def option_printer(options: list) -> str:
-        # options: [option]
-        # Dic to List converter
-        ls = list(map(lambda e: (e[0], e[1][0]), options.items()))
-        return "{color}Options:\n{options_string}\nEnter Option: {white}".format(
-            options_string='\n'.join(f"{i:>4}   {option}" for i, option in ls),
-            color=colors.Yellow, white=colors.White)
+    def stage_selection(self):
+        om = OptionManager()
+        om.add_option("1", "Stage 1", "1")
+        om.add_option("2", "Stage 2", "2")
+        # Print All Stages Avaliable
+        options_string = om.option_printer("Select Stage")
+        stage = om.input(options_string, self.print, self.set_error)
+        self.stage = stage
 
 
 pm = GameManagement()

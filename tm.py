@@ -7,7 +7,7 @@ init()
 class TerminalManager():
     def __init__(self) -> None:
         self.error = None
-        self.length = 15
+        self.length = 18
         # Change inplace to True to print inplace
         self.inplace = False
         if self.inplace:
