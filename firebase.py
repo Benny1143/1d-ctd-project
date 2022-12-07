@@ -68,10 +68,12 @@ def update_user_scores_by_map(name, map, score):
 def update_user_scores(name):
     # name (str)
     total = 0
-    for i in get_user_map_scores(name).val():
+    for i in get_user_map_scores(name).each():
+        i = i.val()
         if i != None:
             total += i
     db.child("highscores").child(name).set(total)
 
 
-# update_user_scores("a")
+if __name__ == "__main__":
+    update_user_scores("benny")
