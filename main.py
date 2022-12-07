@@ -57,7 +57,11 @@ Enter your name (1-7 characters): '''
             hs_string = self.get_highscore_string() + "\n"
             # Options
             play_string = "Play Stage " + str(self.map_id)
-            score = get_user_scores_by_map(self.name, self.map_id)
+
+            map_score_dict = self.get_user_map_dic()
+
+            score = map_score_dict.get(self.map_id)
+
             if score:
                 play_string += f" (scored {score}pt)"
 
@@ -65,6 +69,11 @@ Enter your name (1-7 characters): '''
             om.add_option("1", play_string, self.game)
             om.add_option("2", f"Dual Mode ({self.dual_mode})", switch_dual)
             om.add_option("3", "Select Stage", self.stage_selection)
+
+            # Check if user has played stage 1 & 2
+            if map_score_dict.get(1) and map_score_dict.get(2):
+                om.add_option("4", "Map Creator", self.map_creator)
+
             om.add_option("0", "Exit", exit)
 
             options_string = om.option_printer()
@@ -183,6 +192,9 @@ Enter your name (1-7 characters): '''
             self.set_error("Press Enter to Continue......")
             print_map(map, True)
 
+    def map_creator(self) -> None:
+        print("Map Creator")
+
     # Other helpers
 
     def refresh_highscore(self) -> dict[str, int]:
@@ -211,11 +223,15 @@ Enter your name (1-7 characters): '''
             highscore_string += f"\n{name:8}{score:3}"
         return title + (highscore_string if highscore_string else "\nNil") + "\n"
 
-    def stage_selection(self):
+    def get_user_map_dic(self):
         score_dict = {}
         all_scores = get_user_map_scores(self.name)
         for data in all_scores.each():
             score_dict[data.key()] = data.val()
+        return score_dict
+
+    def stage_selection(self):
+        score_dict = self.get_user_map_dic()
 
         def get_score_string(map_id):
             score = score_dict.get(map_id)
