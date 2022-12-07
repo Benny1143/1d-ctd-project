@@ -16,7 +16,7 @@ class GameManagement(TerminalManager):
     def __init__(self):
         super().__init__()
         self.map_id = 1
-        self.name = "Benny"
+        self.name = "benny"
         self.highscore = None
         self.dual_mode = False
 
@@ -41,7 +41,7 @@ Enter your name (1-7 characters): '''
             if name == "0":
                 self.switch_inplace()
             else:
-                self.name = name
+                self.name = name.lower()
             self.main_menu()
 
     def main_menu(self) -> None:
