@@ -31,7 +31,7 @@ LightYellow  = "\033[93m"
 LightBlue    = "\033[94m"
 LightMagenta = "\033[95m"
 LightCyan    = "\033[96m"
-White        = "\033[97m"
+White        = "\033[0m" # "\033[97m"
 
 BackgroundDefault      = "\033[49m"
 BackgroundBlack        = "\033[40m"
