@@ -12,9 +12,8 @@ class Option:
 
 
 class OptionManager:
-    counter = 1
-
     def __init__(self, option_dict: dict = {}):
+        self.counter = 1
         self._options = []
         self._dict_options = {}
         for name, value in option_dict.items():
@@ -23,10 +22,10 @@ class OptionManager:
     def add_option(self, name: str, value: any = None, option: str = None) -> None:
         if value is None:
             value = name
-        option = option if option else OptionManager.counter
+        option = option if option else str(self.counter)
         self._options.append(Option(option, name, value))
         self._dict_options[option] = value
-        OptionManager.counter += 1
+        self.counter += 1
 
     def option_printer(self, question: str = "Enter Option") -> str:
         options_string = ""

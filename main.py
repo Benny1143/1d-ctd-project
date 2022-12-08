@@ -63,17 +63,18 @@ Enter your name (1-7 characters): '''
             if score:
                 play_string += f" (scored {score}pt)"
 
-            om = OptionManager()
-            om.add_option("1", play_string, self.game)
-            om.add_option("2", f"Dual Mode ({self.dual_mode})", switch_dual)
-            om.add_option("3", "Select Stage", self.stage_selection)
+            om = OptionManager({
+                play_string: self.game,
+                f"Dual Mode ({self.dual_mode})": switch_dual,
+                "Select Stage": self.stage_selection
+            })
 
             # Check if user has played stage 1 & 2
             if map_score_dict.get("1") and map_score_dict.get("2"):
                 self.unlocked = True
-                om.add_option("4", "Map Creator", self.map_creator)
+                om.add_option("Map Creator", self.map_creator)
 
-            om.add_option("0", "Exit", exit)
+            om.add_option("Exit", exit, "0")
 
             options_string = om.option_printer()
 
@@ -199,12 +200,12 @@ Enter your name (1-7 characters): '''
         map_ids = sorted(list(map_ids))
 
         om = OptionManager()
-        om.add_option(0, "**New Map**")
 
-        i = 1
         for map_id in map_ids:
-            om.add_option(i, map_id)
-            i += 1
+            om.add_option(map_id)
+
+        om.add_option("**New Map**", "0", "0")
+
         options_string = om.option_printer("Select Map")
         option = om.input(options_string, self.input, self.set_error)
 
@@ -393,19 +394,19 @@ Enter Action: """
             score = score_dict.get(map_id)
             return f" (scored {score}pt)" if score else ""
 
-        om = OptionManager()
-        om.add_option("1", "Stage 1" + get_score_string("1"), "1")
-        om.add_option("2", "Stage 2" + get_score_string("2"), "2")
+        om = OptionManager({
+            "Stage 1" + get_score_string("1"): "1",
+            "Stage 2" + get_score_string("2"): "2"
+        })
 
         if self.unlocked:
             map_ids = get_all_map_id()
             map_ids.remove("1")
             map_ids.remove("2")
             map_ids = sorted(list(map_ids))
-            i = 3
+
             for map_id in map_ids:
-                om.add_option(i, map_id + get_score_string(map_id), map_id)
-                i += 1
+                om.add_option(map_id + get_score_string(map_id), map_id)
 
         options_string = om.option_printer("Select Stage")
         option = om.input(options_string, self.input, self.set_error)
