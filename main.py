@@ -376,8 +376,6 @@ Enter Action: """
         if values is None:
             return score_dict
         if type(values) == list:
-            for i in range(1, len(values)):
-                print(values[i])
             values = zip(get_user_map_scores(
                 self.name).shallow().get().val(), values[1:])
             for key, score in values:
