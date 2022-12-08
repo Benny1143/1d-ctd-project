@@ -9,7 +9,11 @@ pip install colorama
 
 # Run
 
-Make sure Python 3.9
+Requirements: **Make sure you are running on Python 3.10**
+
+> As there are Chinese and Emoji characters, do switch to a supported terminal
+
+Run the python file
 
 ```console
 python main.py
