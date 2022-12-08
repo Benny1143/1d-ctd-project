@@ -22,8 +22,6 @@ class TerminalManager():
 
     def print(self, text: str, get_input: bool = False, clear_screen: bool = True):
         length = self.length
-        if self.inplace and clear_screen:
-            self.clear()
         if self.error and self.inplace:
             length -= 1
         text_ls = text.split("\n")
@@ -38,7 +36,11 @@ class TerminalManager():
             self.error = None
         if len_text > length:
             raise Exception("The print string is longer than space assigned")
-        text = "\n"*(length - len_text) + text
+        if self.inplace and clear_screen:
+            text = "\033[K\n"*(length - len_text) + \
+                "\033[K\n".join(text.split("\n")) + "\033[K"
+        else:
+            text = "\n"*(length - len_text) + text
         if self.inplace:
             text = f"\x1B[{length}A" + text
             if self.error:
