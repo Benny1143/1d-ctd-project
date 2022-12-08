@@ -60,7 +60,7 @@ Enter your name (1-7 characters): '''
 
             score = map_score_dict.get(self.map_id)
 
-            if score:
+            if score is not None:
                 play_string += f" (scored {score}pt)"
 
             om = OptionManager({
@@ -390,7 +390,7 @@ Enter Action: """
 
         def get_score_string(map_id):
             score = score_dict.get(map_id)
-            return f" (scored {score}pt)" if score else ""
+            return f" (scored {score}pt)" if score is not None else ""
 
         om = OptionManager({
             "Stage 1" + get_score_string("1"): "1",
