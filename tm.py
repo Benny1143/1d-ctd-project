@@ -5,8 +5,7 @@ class TerminalManager():
     def __init__(self) -> None:
         self.error = None
         self.length = 18
-        # Change inplace to True to print inplace
-        self.inplace = True
+        self.inplace = True  # Change inplace to True to print inplace
         if self.inplace:
             print("\n"*self.length, flush=True)
 
@@ -23,28 +22,25 @@ class TerminalManager():
             length -= 1
         text_ls = text.split("\n")
         len_text = len(text_ls)
-        if not self.inplace and self.error:
-            if get_input:
-                # print one line above input string
-                text = "\n".join(text_ls[:-1] + [self.error, text_ls[-1]])
-            else:
-                # print above all the text
-                text = f"{self.error}\n{text}"
-            self.error = None
         if len_text > length:
-            raise Exception("The print string is longer than space assigned")
+            raise Exception(
+                f"{text}\n\nThe print string is longer than space assigned")
+
         if self.inplace:
-            text = "\033[K\n"*(length - len_text) + \
-                "\033[K\n".join(text.split("\n")) + "\033[K"
+            text = "\x1B[{length}A{empty_space}{text}\033[K".format(
+                length=length,
+                empty_space="\033[K\n"*(length - len_text),
+                text="\033[K\n".join(text.split("\n")))
+            print(self.error if self.error else "\033[K", end="", flush=True)
         else:
-            text = "\n"*(length - len_text) + text
-        if self.inplace:
-            text = f"\x1B[{length}A" + text
             if self.error:
-                print(self.error, end="", flush=True)
-                self.error = None
-            else:
-                print("\033[K", end="", flush=True)
+                if get_input:
+                    text = "\n".join(text_ls[:-1] + [self.error, text_ls[-1]])
+                else:
+                    text = f"{self.error}\n{text}"
+            text = "\n"*(length - len_text) + text
+
+        self.error = None
         if get_input:
             return input(text)
         print(text, flush=True)
