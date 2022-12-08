@@ -7,14 +7,16 @@ class Option:
         self.name = name
         self.function = function
 
+    def __str__(self):
+        return f"{self.option:>4}   {self.name}"
+
 
 class OptionManager:
     def __init__(self):
         self._options = []
         self._dict_options = {}
-        pass
 
-    def add_option(self, option, name, function = None):
+    def add_option(self, option, name, function=None):
         if function is None:
             function = name
         option = str(option)
@@ -22,10 +24,11 @@ class OptionManager:
         self._dict_options[option] = function
 
     def option_printer(self, question: str = "Enter Option") -> str:
-        ls = list(map(lambda option: (option.option, option.name), self._options))
-        return "{color}Options:\n{options_string}\n{question}: {white}".format(
-            options_string='\n'.join(
-                f"{option:>4}   {name}" for option, name in ls),
+        options_string = ""
+        for option in self._options:
+            options_string += str(option) + "\n"
+        return "{color}Options:\n{options_string}{question}: {white}".format(
+            options_string=options_string,
             color=colors.Yellow, white=colors.White,
             question=question)
 
