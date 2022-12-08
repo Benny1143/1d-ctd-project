@@ -36,7 +36,7 @@ Welcome to Chinese Freshmore Programme
 Enter your name (1-7 characters): '''
         while True:
             # Restrict name input to 7 characters
-            name = self.print(page_string, True)
+            name = self.input(page_string)
             if len(name) > 7 or len(name) == 0:
                 self.set_error("Invalid String Length")
                 continue
@@ -63,24 +63,25 @@ Enter your name (1-7 characters): '''
             if score:
                 play_string += f" (scored {score}pt)"
 
-            om = OptionManager()
-            om.add_option("1", play_string, self.game)
-            om.add_option("2", f"Dual Mode ({self.dual_mode})", switch_dual)
-            om.add_option("3", "Select Stage", self.stage_selection)
+            om = OptionManager({
+                play_string: self.game,
+                f"Dual Mode ({self.dual_mode})": switch_dual,
+                "Select Stage": self.stage_selection
+            })
 
             # Check if user has played stage 1 & 2
             if map_score_dict.get("1") and map_score_dict.get("2"):
                 self.unlocked = True
-                om.add_option("4", "Map Creator", self.map_creator)
+                om.add_option("Map Creator", self.map_creator)
 
-            om.add_option("0", "Exit", exit)
+            om.add_option("Exit", exit, "0")
 
             options_string = om.option_printer()
 
             self.refresh_highscore()
 
             string = title + hs_string + options_string
-            option = om.input(string, self.print, self.set_error)
+            option = om.input(string, self.input, self.set_error)
             om.get_option(option)()
 
     def game(self) -> None:
@@ -113,8 +114,7 @@ Enter your name (1-7 characters): '''
             new_map_str = "\n".join(tmp_map_str)
             ##
 
-            self.print(
-                "\n".join([title, new_map_str, control_str]), last_line, False)
+            self.print("\n".join([title, new_map_str, control_str]), last_line)
         self.clear()
         print_map(map)
 
@@ -200,21 +200,21 @@ Enter your name (1-7 characters): '''
         map_ids = sorted(list(map_ids))
 
         om = OptionManager()
-        om.add_option(0, "**New Map**")
 
-        i = 1
         for map_id in map_ids:
-            om.add_option(i, map_id)
-            i += 1
+            om.add_option(map_id)
+
+        om.add_option("**New Map**", "0", "0")
+
         options_string = om.option_printer("Select Map")
-        option = om.input(options_string, self.print, self.set_error)
+        option = om.input(options_string, self.input, self.set_error)
 
         characters = {}
         winning_conditions = {}
 
         if option == "0":
             while True:
-                map_id = self.print("Enter new map name: ", True)
+                map_id = self.input("Enter new map name: ")
                 # Check if can have filename
                 if map_id in map_ids_copy:
                     self.set_error("Filename has been used")
@@ -249,13 +249,13 @@ e - exit
 wa - add winninng conditions
 wd - delete winning conditions
 Enter Action: """
-            option = self.print(
-                f"Map Name: {map_id}\n" + map_string + input_string, True)
+            option = self.input(
+                f"Map Name: {map_id}\n{map_string}{input_string}")
             if option == "a":
                 while True:
                     map_string = get_map_wc_string()
                     qn1 = "\nEnter a chinese character (e - exit): "
-                    chi_char = self.print(map_string + qn1, True)
+                    chi_char = self.input(map_string + qn1)
 
                     if chi_char == "e":
                         break
@@ -267,7 +267,7 @@ Enter Action: """
 
                     # Ask for coordinate inputs
                     qn2 = "enter the x coordinate: "
-                    x_cor = int(self.print(map_string + qn2, True))
+                    x_cor = int(self.input(map_string + qn2))
                     if x_cor <= 0 or x_cor > 5:
                         self.set_error("Invalid x_cor not between 1-5")
                         continue
@@ -275,7 +275,7 @@ Enter Action: """
                     map_string += qn2 + str(x_cor) + "\n"
 
                     qn3 = "enter the y coordinate: "
-                    y_cor = int(self.print(map_string + qn3, True))
+                    y_cor = int(self.input(map_string + qn3))
                     if y_cor <= 0 or y_cor > 5:
                         self.set_error("Invalid y_cor not between 1-5")
                         continue
@@ -298,7 +298,7 @@ Enter Action: """
                 while True:
                     map_string = get_map_wc_string()
                     question = "\nChinese Character to be deleted (e - exit): "
-                    cc = self.print(map_string + question, True)
+                    cc = self.input(map_string + question)
                     if cc == "e":
                         break
                     # Check if cc exist
@@ -314,24 +314,24 @@ Enter Action: """
             elif option == "wa":
                 map_string = get_map_wc_string()
                 qn1 = "\nEnter two Chinese characters (e - exit): "
-                win_con = self.print(map_string + qn1, True)
+                win_con = self.input(map_string + qn1)
                 if len(win_con) != 2 or win_con == "e":
                     continue
 
                 map_string += qn1 + win_con
                 qn2 = "\nEnter English translation: "
-                eng = self.print(map_string + qn2, True)
+                eng = self.input(map_string + qn2)
 
                 map_string += qn2 + eng
                 qn3 = "\nEnter points: "
-                pts = self.print(map_string + qn3, True)
+                pts = self.input(map_string + qn3)
 
                 winning_conditions[win_con] = WinningCondition(eng, pts)
             elif option == "wd":
                 while True:
                     map_string = get_map_wc_string()
-                    cc = self.print(
-                        map_string + "\nWinning Condition to be deleted (e - exit): ", True)
+                    cc = self.input(
+                        f"{map_string}\nWinning Condition to be deleted (e - exit): ")
                     if cc == "e":
                         break
                     if cc in winning_conditions:
@@ -376,8 +376,6 @@ Enter Action: """
         if values is None:
             return score_dict
         if type(values) == list:
-            for i in range(1, len(values)):
-                print(values[i])
             values = zip(get_user_map_scores(
                 self.name).shallow().get().val(), values[1:])
             for key, score in values:
@@ -394,22 +392,22 @@ Enter Action: """
             score = score_dict.get(map_id)
             return f" (scored {score}pt)" if score else ""
 
-        om = OptionManager()
-        om.add_option("1", "Stage 1" + get_score_string("1"), "1")
-        om.add_option("2", "Stage 2" + get_score_string("2"), "2")
+        om = OptionManager({
+            "Stage 1" + get_score_string("1"): "1",
+            "Stage 2" + get_score_string("2"): "2"
+        })
 
         if self.unlocked:
             map_ids = get_all_map_id()
             map_ids.remove("1")
             map_ids.remove("2")
             map_ids = sorted(list(map_ids))
-            i = 3
+
             for map_id in map_ids:
-                om.add_option(i, map_id + get_score_string(map_id), map_id)
-                i += 1
+                om.add_option(map_id + get_score_string(map_id), map_id)
 
         options_string = om.option_printer("Select Stage")
-        option = om.input(options_string, self.print, self.set_error)
+        option = om.input(options_string, self.input, self.set_error)
         option = om.get_option(option)
         self.map_id = option
 

@@ -2,41 +2,54 @@ import colors
 
 
 class Option:
-    def __init__(self, option, name, function):
+    def __init__(self, option: str, name: str, value: any):
         self.option = option
         self.name = name
-        self.function = function
+        self.value = value
+
+    def __str__(self) -> str:
+        return f"{self.option:>4}   {self.name}"
 
 
 class OptionManager:
-    def __init__(self):
+    def __init__(self, option_dict: dict = {}):
+        self.counter = 1
         self._options = []
         self._dict_options = {}
-        pass
+        for name, value in option_dict.items():
+            self.add_option(name, value)
 
-    def add_option(self, option, name, function = None):
-        if function is None:
-            function = name
-        option = str(option)
-        self._options.append(Option(option, name, function))
-        self._dict_options[option] = function
+    def add_option(self, name: str, value: any = None, option: str = None) -> None:
+        if value is None:
+            value = name
+        option = option if option else str(self.counter)
+        self._options.append(Option(option, name, value))
+        self._dict_options[option] = value
+        self.counter += 1
 
     def option_printer(self, question: str = "Enter Option") -> str:
-        ls = list(map(lambda option: (option.option, option.name), self._options))
-        return "{color}Options:\n{options_string}\n{question}: {white}".format(
-            options_string='\n'.join(
-                f"{option:>4}   {name}" for option, name in ls),
+        options_string = ""
+        for option in self._options:
+            options_string += str(option) + "\n"
+        return "{color}Options:\n{options_string}{question}: {white}".format(
+            options_string=options_string,
             color=colors.Yellow, white=colors.White,
             question=question)
 
-    def get_option(self, option):
+    def get_option(self, option: str):
         if option in self._dict_options:
             return self._dict_options.get(option)
 
-    def input(self, string, print_function, error_function):
+    def input(self, string, input_function, error_function):
         while True:
-            option = print_function(string, True)
+            option = input_function(string)
             if option in self._dict_options:
                 return option
             else:
                 error_function("Invalid Option")
+
+
+if __name__ == "__main__":
+    om = OptionManager({"Test": 1})
+    om.add_option("Exit", "0", "0")
+    print(om.option_printer())
