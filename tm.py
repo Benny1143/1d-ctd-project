@@ -20,6 +20,7 @@ class TerminalManager():
         length = self.length
         if self.error and self.inplace:
             length -= 1
+
         text_ls = text.split("\n")
         len_text = len(text_ls)
         if len_text > length:
@@ -31,7 +32,8 @@ class TerminalManager():
                 length=length,
                 empty_space="\033[K\n"*(length - len_text),
                 text="\033[K\n".join(text.split("\n")))
-            print(self.error if self.error else "\033[K", end="", flush=True)
+            print((self.error + "\033[K")
+                  if self.error else "\033[K", end="", flush=True)
         else:
             if self.error:
                 if get_input:
@@ -49,4 +51,14 @@ class TerminalManager():
         return self.print(text, True)
 
     def set_error(self, error: str) -> None:
-        self.error = colors.Red + error + colors.White + "\r"
+        self.error = colors.Red + error + colors.White
+
+
+if __name__ == "__main__":
+    tm = TerminalManager()
+    while True:
+        error = tm.input("Input Error (0 - Exit): ")
+        if error == "0":
+            break
+        if error:
+            tm.set_error(error)
