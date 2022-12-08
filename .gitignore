@@ -1,2 +1,7 @@
 __pycache__
 .env
+.vscode
+map/*
+!map/1.txt
+!map/2.txt
+!map/apple.txt
