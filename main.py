@@ -40,11 +40,7 @@ Enter your name (1-7 characters): '''
             if len(name) > 7 or len(name) == 0:
                 self.set_error("Invalid String Length")
                 continue
-            # Secret switch
-            if name == "0":
-                self.switch_inplace()
-            else:
-                self.name = name.lower()
+            self.name = name.lower()
             self.main_menu()
 
     def main_menu(self) -> None:
@@ -418,5 +414,5 @@ Enter Action: """
         self.map_id = option
 
 
-pm = GameManagement()
-pm.main()
+if __name__ == "__main__":
+    GameManagement().main()

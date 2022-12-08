@@ -9,7 +9,7 @@ class TerminalManager():
         self.error = None
         self.length = 18
         # Change inplace to True to print inplace
-        self.inplace = False
+        self.inplace = True
         if self.inplace:
             print("\n"*self.length, flush=True)
 
