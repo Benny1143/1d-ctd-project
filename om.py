@@ -2,26 +2,31 @@ import colors
 
 
 class Option:
-    def __init__(self, option, name, function):
+    def __init__(self, option: str, name: str, value: any):
         self.option = option
         self.name = name
-        self.function = function
+        self.value = value
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.option:>4}   {self.name}"
 
 
 class OptionManager:
-    def __init__(self):
+    counter = 1
+
+    def __init__(self, option_dict: dict = {}):
         self._options = []
         self._dict_options = {}
+        for name, value in option_dict.items():
+            self.add_option(name, value)
 
-    def add_option(self, option, name, function=None):
-        if function is None:
-            function = name
-        option = str(option)
-        self._options.append(Option(option, name, function))
-        self._dict_options[option] = function
+    def add_option(self, name: str, value: any = None, option: str = None) -> None:
+        if value is None:
+            value = name
+        option = option if option else OptionManager.counter
+        self._options.append(Option(option, name, value))
+        self._dict_options[option] = value
+        OptionManager.counter += 1
 
     def option_printer(self, question: str = "Enter Option") -> str:
         options_string = ""
@@ -32,7 +37,7 @@ class OptionManager:
             color=colors.Yellow, white=colors.White,
             question=question)
 
-    def get_option(self, option):
+    def get_option(self, option: str):
         if option in self._dict_options:
             return self._dict_options.get(option)
 
@@ -43,3 +48,9 @@ class OptionManager:
                 return option
             else:
                 error_function("Invalid Option")
+
+
+if __name__ == "__main__":
+    om = OptionManager({"Test": 1})
+    om.add_option("Exit", "0", "0")
+    print(om.option_printer())
