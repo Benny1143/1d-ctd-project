@@ -1,7 +1,4 @@
 import colors as colors
-# https://stackoverflow.com/questions/70480375/python-text-color-is-not-working-in-cmd-but-it-is-working-in-windows-terminal
-from colorama import init
-init()
 
 
 class TerminalManager():
