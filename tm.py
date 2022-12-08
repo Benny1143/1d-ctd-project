@@ -31,7 +31,7 @@ class TerminalManager():
             text = "\x1B[{length}A{empty_space}{text}\033[K".format(
                 length=length,
                 empty_space="\033[K\n"*(length - len_text),
-                text="\033[K\n".join(text.split("\n")))
+                text="\033[K\n".join(text_ls))
             print((self.error + "\033[K")
                   if self.error else "\033[K", end="", flush=True)
         else:
