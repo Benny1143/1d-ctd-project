@@ -17,7 +17,7 @@ q = queue.Queue()
 class GameManagement(TerminalManager):
     def __init__(self):
         super().__init__()
-        self.map_id = 1
+        self.map_id = "1"
         self.name = "benny"
         self.highscore = None
         self.dual_mode = False
