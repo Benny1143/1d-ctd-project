@@ -17,7 +17,7 @@ class TerminalManager():
         print(f"\x1B[{self.length}A" + "\033[K\n" *
               (self.length), end="", flush=True)
 
-    def print(self, text: str, get_input: bool = False, clear_screen: bool = True):
+    def print(self, text: str, get_input: bool = False) -> str | None:
         length = self.length
         if self.error and self.inplace:
             length -= 1
@@ -33,7 +33,7 @@ class TerminalManager():
             self.error = None
         if len_text > length:
             raise Exception("The print string is longer than space assigned")
-        if self.inplace and clear_screen:
+        if self.inplace:
             text = "\033[K\n"*(length - len_text) + \
                 "\033[K\n".join(text.split("\n")) + "\033[K"
         else:
@@ -49,5 +49,8 @@ class TerminalManager():
             return input(text)
         print(text, flush=True)
 
-    def set_error(self, error: str):
+    def input(self, text: str) -> str:
+        return self.print(text, True)
+
+    def set_error(self, error: str) -> None:
         self.error = colors.Red + error + colors.White + "\r"

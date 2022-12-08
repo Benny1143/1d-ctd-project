@@ -33,9 +33,9 @@ class OptionManager:
         if option in self._dict_options:
             return self._dict_options.get(option)
 
-    def input(self, string, print_function, error_function):
+    def input(self, string, input_function, error_function):
         while True:
-            option = print_function(string, True)
+            option = input_function(string)
             if option in self._dict_options:
                 return option
             else:

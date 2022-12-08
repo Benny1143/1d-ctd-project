@@ -36,7 +36,7 @@ Welcome to Chinese Freshmore Programme
 Enter your name (1-7 characters): '''
         while True:
             # Restrict name input to 7 characters
-            name = self.print(page_string, True)
+            name = self.input(page_string)
             if len(name) > 7 or len(name) == 0:
                 self.set_error("Invalid String Length")
                 continue
@@ -80,7 +80,7 @@ Enter your name (1-7 characters): '''
             self.refresh_highscore()
 
             string = title + hs_string + options_string
-            option = om.input(string, self.print, self.set_error)
+            option = om.input(string, self.input, self.set_error)
             om.get_option(option)()
 
     def game(self) -> None:
@@ -113,8 +113,7 @@ Enter your name (1-7 characters): '''
             new_map_str = "\n".join(tmp_map_str)
             ##
 
-            self.print(
-                "\n".join([title, new_map_str, control_str]), last_line, False)
+            self.print("\n".join([title, new_map_str, control_str]), last_line)
         self.clear()
         print_map(map)
 
@@ -207,14 +206,14 @@ Enter your name (1-7 characters): '''
             om.add_option(i, map_id)
             i += 1
         options_string = om.option_printer("Select Map")
-        option = om.input(options_string, self.print, self.set_error)
+        option = om.input(options_string, self.input, self.set_error)
 
         characters = {}
         winning_conditions = {}
 
         if option == "0":
             while True:
-                map_id = self.print("Enter new map name: ", True)
+                map_id = self.input("Enter new map name: ")
                 # Check if can have filename
                 if map_id in map_ids_copy:
                     self.set_error("Filename has been used")
@@ -249,13 +248,13 @@ e - exit
 wa - add winninng conditions
 wd - delete winning conditions
 Enter Action: """
-            option = self.print(
-                f"Map Name: {map_id}\n" + map_string + input_string, True)
+            option = self.input(
+                f"Map Name: {map_id}\n{map_string}{input_string}")
             if option == "a":
                 while True:
                     map_string = get_map_wc_string()
                     qn1 = "\nEnter a chinese character (e - exit): "
-                    chi_char = self.print(map_string + qn1, True)
+                    chi_char = self.input(map_string + qn1)
 
                     if chi_char == "e":
                         break
@@ -267,7 +266,7 @@ Enter Action: """
 
                     # Ask for coordinate inputs
                     qn2 = "enter the x coordinate: "
-                    x_cor = int(self.print(map_string + qn2, True))
+                    x_cor = int(self.input(map_string + qn2))
                     if x_cor <= 0 or x_cor > 5:
                         self.set_error("Invalid x_cor not between 1-5")
                         continue
@@ -275,7 +274,7 @@ Enter Action: """
                     map_string += qn2 + str(x_cor) + "\n"
 
                     qn3 = "enter the y coordinate: "
-                    y_cor = int(self.print(map_string + qn3, True))
+                    y_cor = int(self.input(map_string + qn3))
                     if y_cor <= 0 or y_cor > 5:
                         self.set_error("Invalid y_cor not between 1-5")
                         continue
@@ -298,7 +297,7 @@ Enter Action: """
                 while True:
                     map_string = get_map_wc_string()
                     question = "\nChinese Character to be deleted (e - exit): "
-                    cc = self.print(map_string + question, True)
+                    cc = self.input(map_string + question)
                     if cc == "e":
                         break
                     # Check if cc exist
@@ -314,24 +313,24 @@ Enter Action: """
             elif option == "wa":
                 map_string = get_map_wc_string()
                 qn1 = "\nEnter two Chinese characters (e - exit): "
-                win_con = self.print(map_string + qn1, True)
+                win_con = self.input(map_string + qn1)
                 if len(win_con) != 2 or win_con == "e":
                     continue
 
                 map_string += qn1 + win_con
                 qn2 = "\nEnter English translation: "
-                eng = self.print(map_string + qn2, True)
+                eng = self.input(map_string + qn2)
 
                 map_string += qn2 + eng
                 qn3 = "\nEnter points: "
-                pts = self.print(map_string + qn3, True)
+                pts = self.input(map_string + qn3)
 
                 winning_conditions[win_con] = WinningCondition(eng, pts)
             elif option == "wd":
                 while True:
                     map_string = get_map_wc_string()
-                    cc = self.print(
-                        map_string + "\nWinning Condition to be deleted (e - exit): ", True)
+                    cc = self.input(
+                        f"{map_string}\nWinning Condition to be deleted (e - exit): ")
                     if cc == "e":
                         break
                     if cc in winning_conditions:
@@ -409,7 +408,7 @@ Enter Action: """
                 i += 1
 
         options_string = om.option_printer("Select Stage")
-        option = om.input(options_string, self.print, self.set_error)
+        option = om.input(options_string, self.input, self.set_error)
         option = om.get_option(option)
         self.map_id = option
 
