@@ -12,10 +12,14 @@ Welcome to Chinese Freshmore Programme
 # Installation
 
 ```console
-pip install python-decouple
-pip install libdw
-pip install pynput
+pip install -r requirements.txt
 ```
+
+# Setup
+
+Copy ".env copy" > ".env"
+
+Fill in the details for `DBURL=` `EMAIL=` `PASSWORD=` `APIKEY=`
 
 # Run
 
