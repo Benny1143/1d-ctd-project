@@ -50,3 +50,5 @@ python main.py
     <img src="https://i.stack.imgur.com/gVE0j.png" alt="linkedin"> Eugene Oon
   </a> &nbsp;
 </p>
+
+Project of [10.020 Data Driven World](https://sutd.edu.sg/Admissions/Undergraduate/Unique-Curriculum/Freshmore-Subjects/Data-Driven-World)
