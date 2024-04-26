@@ -1,3 +1,13 @@
+```console   ____   _        ____
+U /"___| |"|    U | __")u
+\| | u U | | u   \|  _ \/
+ | |/__ \| |/__   | |_) |
+  \____| |_____|  |____/
+ _// \\  //  \\  _|| \\_
+(__)(__)(_")("_)(__) (__)
+Welcome to Chinese Freshmore Programme
+```
+
 # Installation
 
 ```console
