@@ -27,9 +27,9 @@ class GameManagement(TerminalManager):
     def main(self) -> None:
         page_string = '''   ____   _        ____
 U /"___| |"|    U | __")u
-\| | u U | | u   \|  _ \/
- | |/__ \| |/__   | |_) |
-  \____| |_____|  |____/
+\\| | u U | | u   \\|  _ \\/
+ | |/__ \\| |/__   | |_) |
+  \\____| |_____|  |____/
  _// \\\\  //  \\\\  _|| \\\\_
 (__)(__)(_")("_)(__) (__)
 Welcome to Chinese Freshmore Programme
@@ -358,6 +358,8 @@ Enter Action: """
         highscores = self.get_highscores()
         highscore_string = ""
         # https://stackoverflow.com/questions/613183/how-do-i-sort-a-dictionary-by-value
+        if highscores is None:
+            return title + "\n"
         highscores = {k: v for k, v in sorted(
             highscores.items(), key=lambda item: item[1], reverse=True)}
         hs_keys = list(highscores.keys())
