@@ -51,4 +51,4 @@ python main.py
   </a> &nbsp;
 </p>
 
-Project of [10.020 Data Driven World](https://sutd.edu.sg/Admissions/Undergraduate/Unique-Curriculum/Freshmore-Subjects/Data-Driven-World)
+Project of [10.014 Computational Thinking for Design](https://sutd.edu.sg/Admissions/Undergraduate/Unique-Curriculum/Freshmore-Subjects/Computational-Thinking-for-Design)
